@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<!-- access right berbentuk dropdown -->
+
+		<!-- 
+			Buat kategori baru terlebih dahulu,
+			pada UI groups, "ir.module.category" adalah fields
+			yang mempunyai string "Application"
+		-->
+		<record model="ir.module.category" id="access_right_category">
+			<field name="name">Persebaya Fans Access Right</field>
+			<field name="description">Akses user untuk modul Persebaya</field>
+		</record>
+
+		<record model="res.groups" id="persebaya.group_fans">
+			<field name="name">Fans Persebaya</field>
+			<!-- category_id diisi berdasarkan kategori yang sudah dibuat diatas -->
+			<field name="category_id" ref="access_right_category"/>
+		</record>
+
+		<record model="res.groups" id="persebaya.group_employee">
+			<field name="name">Karyawan Persebaya</field>
+			<!-- category_id diisi berdasarkan kategori yang sudah dibuat diatas -->
+			<field name="category_id" ref="access_right_category"/>
+			<field name="implied_ids" eval="[(4, ref('persebaya.group_fans'))]"/>
+		</record>
+
+		<record model="res.groups" id="persebaya.group_club">
+			<field name="name">Klub Persebaya</field>
+			<field name="category_id" ref="access_right_category"/>
+			<!--
+				implied_ids adalah untuk mengatur group lain yang ter-implikasi,
+				dari group yang baru dibuat ini.
+				Efeknya adalah, jika user diset sebagai anggota grup manager,
+				maka otomatis dia adalah anggota grup karyawan.
+				Jika tidak ingin seperti itu maka kita bisa mengabaikan field ini.
+				Field implied_ids bisa dilihat di tab "Inherited" pada form group.
+				Isi field dengan 'eval', untuk meng-evaluasi nilai defaultnya.
+				Untuk memahami mengapa ada nilai 4, silakan buka link,
+				https://www.odoo.com/documentation/10.0/reference/orm.html#model-reference,
+				baca mulai tulisan 'One2many and Many2many use a special "commands" format to ....'
+			-->
+			<field name="implied_ids" eval="[(4, ref('persebaya.group_employee'))]"/>
+		</record>
+		<!-- end of - access right berbentuk dropdown -->
+	</data>
+</odoo>

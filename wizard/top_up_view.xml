@@ -1,0 +1,47 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="top_up_form_view">
+            <field name="name">Top Up</field>
+            <field name="model">persebaya.topup</field>
+            <field name="arch" type="xml">
+                <form string="Top Up">
+	                <group>
+                        <group>
+                            <field name="nik"/>
+                            <field name="nama"/>
+                            <field name="saldo_terkini"/>
+                            <field name="topup"/>
+                        </group>
+	                </group>
+	                <footer>
+	                 	<button name="proses_top_up" type="object" string="Save"/> or 
+	                 	<button name="" string="Cancel" special="cancel" class="oe_link"/> 
+	                </footer>
+	            </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_tree_top_up">
+            <field name="name">Top Up</field>
+            <field name="model">persebaya.topup</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="nik"/>
+                    <field name="topup"/>
+                    <field name="create_date"/>
+                    <field name="create_uid"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_view_top_up" model="ir.actions.act_window">
+            <field name="name">Top Up</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">persebaya.topup</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="top_up_form_view"/>
+            <field name="target">new</field>
+        </record>
+	</data>
+</odoo>

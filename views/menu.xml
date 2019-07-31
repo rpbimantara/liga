@@ -1,0 +1,29 @@
+<odoo>
+    <data>
+        <!-- <menuitem id="menu_merchandise" name="Merchandise" sequence="2"/>        
+        <menuitem id="menu_data_merchandise" parent="menu_merchandise" name="Merchandise" sequence="1"/>
+            <menuitem id="menu_master_merchandise" parent="menu_data_merchandise" name="Master Merchandise" sequence="1" action="action_master_merchandise"/>
+            <menuitem id="menu_update_harga" parent="menu_data_merchandise" name="Update Harga" action="action_view_update_harga" sequence="2"/>
+            <menuitem id="menu_update_stock" parent="menu_data_merchandise" name="Update Stock" action="action_view_update_stock" sequence="3"/> -->
+        <menuitem id="menu_data_lelang" parent="sales_team.menu_base_partner" name="Auction" sequence="3"/>
+            <menuitem id="menu_master_lelang" parent="menu_data_lelang" name="Auction List" sequence="1" action="action_master_lelang"/>
+            <menuitem id="menu_top_up" parent="menu_data_lelang" name="Top Up" action="action_view_top_up" sequence="2"/><!-- 
+            <menuitem id="menu_update_stock" parent="menu_data_merchandise" name="Update Stock" action="action_view_update_stock" sequence="3"/> -->
+        <!-- <menuitem id="menu_config" parent="menu_merchandise" name="Pengaturan"/>
+	         <menuitem id="menu_ukuran" parent="menu_config" name="Ukuran" sequence="1" action="action_ukuran"/> -->
+
+	    <!-- <menuitem id="menu_team" name="Team" sequence="3"/>         -->
+        <menuitem id="menu_data_team" parent="event.event_main_menu" name="Team" sequence="11"/>
+        	<menuitem id="menu_master_team" parent="menu_data_team" name="Team" sequence="1" action="action_master_club"/>
+        	<menuitem id="menu_master_stadion" parent="menu_data_team" name="Stadium" sequence="2" action="action_master_stadion"/>
+            <menuitem id="menu_jadwal_team" parent="menu_data_team" name="Schedule" sequence="3" action="action_jadwal_team"/>
+        <menuitem id="menu_data_liga" parent="event.event_main_menu" name="League" sequence="12"/>
+        	<menuitem id="menu_master_liga" parent="menu_data_liga" name="League" sequence="1" action="action_master_liga"/>
+        <menuitem id="menu_data_news" parent="event.event_main_menu" name="News" sequence="13"/>
+            <menuitem id="menu_master_news" parent="menu_data_news" name="News" sequence="1" action="action_master_berita"/>
+            <menuitem id="menu_kategori_news" parent="menu_data_news" name="News Category" sequence="2" action="action_master_beritakategori"/>
+
+            <!-- <menuitem id="menu_hr_root" name="Employees" sequence="75"/> -->
+        <menuitem id="tes" parent="hr.menu_hr_root" name="Fans / Supporter" sequence="1" action="action_show_fans"/>
+    </data>
+</odoo>

@@ -1,0 +1,125 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="view_form_master_liga">
+			<field name="name">Master Liga</field>
+			<field name="model">persebaya.liga</field>
+			<field name="arch" type="xml">
+				<form string="Master Liga">
+					<header>
+						<button name="action_draft" type="object" string="Set ke Draft" class="oe_highlight oe_read_only" attrs="{'invisible':[('status_liga', '=', 'draft')]}"/>
+						<button name="action_valid"  type="object" string="Validasi" class="oe_highlight oe_read_only" attrs="{'invisible':[('status_liga', '=', 'valid')]}"/>
+						<field name="status_liga" widget="statusbar"/>
+					</header>
+					<sheet>
+						<div class="oe_button_box" name="button_box">
+                            <button name="open_list_jadwal" type="object" class="oe_stat_button" icon="fa-calendar" string="Jadwal Liga"/>
+	                    </div>
+						<field name="image" widget='image' class="oe_avatar" />
+						<div class="oe_title">
+							<h1>
+								<field name="nama" default_focus="1" placeholder="Nama Liga"/>
+							</h1>
+						</div>
+						<group>
+							<group>
+								<field name="negara"/>
+								<field name="thn_bentuk"/>
+								<field name="jmlh_tim"/>
+								<field name="website" widget="url"/>
+							</group>
+							<group>
+								<field name="juara_lalu"/>
+								<field name="klub_sukses"/>
+								<field name="tgl_validasi"/>
+							</group>
+						</group>
+						<notebook>
+							<page String="Klasemen" autofocus="autofocus">
+								<field name="klasemen_ids" attrs="{'readonly':[('status_liga','=','valid')]}">
+									<tree edit="false">
+										<field name="club_id"/>
+										<field name="play"/>
+										<field name="win"/>
+										<field name="draw"/>
+										<field name="lose"/>
+										<field name="gm"/>
+										<field name="gk"/>
+										<field name="point"/>
+									</tree>
+									<form>
+										<group>
+											<group>
+												<field name="club_id" domain="[('active','=','true')]"/>
+												<field name="play"/>
+												<field name="win"/>
+												<field name="draw"/>
+												<field name="lose"/>
+												<field name="gm"/>
+												<field name="gk"/>
+												<field name="point"/>
+											</group>
+										</group>
+									</form>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_tree_master_liga">
+			<field name="name">Master Liga</field>
+			<field name="model">persebaya.liga</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="nama"/>
+					<field name="thn_bentuk"/>
+					<field name="jmlh_tim"/>
+					<field name="tgl_validasi"/>
+					<field name="status_liga"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="liga_search_view">
+            <field name="name">persebaya.liga.search</field>
+            <field name="model">persebaya.liga</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="nama"/>
+					<field name="thn_bentuk"/>
+					<field name="jmlh_tim"/>
+					<field name="tgl_validasi"/>
+					<field name="status_liga"/>
+                </search>
+            </field>
+        </record>
+
+		<record id="action_show_jadwal" model="ir.actions.act_window">
+            <field name="name">Jadwal Pertandingan</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">persebaya.jadwal</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_liga_id':active_id}</field>
+            <field name="view_id" ref="view_tree_master_jadwal"/>
+        </record>
+
+		<record model="ir.actions.act_window" id="action_master_liga">
+			<field name="name">Master Liga</field>
+			<field name="res_model">persebaya.liga</field>
+			<field name="view_id" ref="view_tree_master_liga"/>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Data Liga masih kosong. Masukkan Data terlebih dahulu.</p>
+			</field>
+		</record>
+
+	</data>
+</odoo>

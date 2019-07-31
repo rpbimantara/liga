@@ -1,0 +1,106 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="view_form_master_lelang">
+			<field name="name">Auction</field>
+			<field name="model">persebaya.lelang</field>
+			<field name="arch" type="xml">
+				<form string="Master Lelang">
+					<header>
+						<field name="status_lelang" widget="statusbar"/>
+					</header>
+					<sheet>
+						<div class="oe_button_box" name="button_box">
+                        	<!-- <button name="open_list_update_harga" type="object" class="oe_stat_button" icon="fa-usd" string="History Harga"/> -->
+                        	<button name="list_lelang" type="object" class="oe_stat_button" icon="fa-bars" string="History Stock"/>
+                        	<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-check">
+                               <field name="active" widget="boolean_button" options='{"terminology": {
+													            "string_true": "New Item",
+													            "hover_true": "Second Item",
+													            "string_false": "Second Item",
+													            "hover_false": "New Item"
+													        }}'/>
+                            </button>
+	                    </div>
+						<field name="foto_lelang" widget='image' class="oe_avatar" />
+						<div class="oe_title">
+							<h1>
+								<field name="nama_barang" default_focus="1" placeholder="Nama Barang"/>
+							</h1>
+						</div>
+						<group>
+							<group>
+								<field name="ob"/>
+								<field name="inc"/>
+								<field name="binow"/>
+								<field name="due_date"/>
+								<field name="create_uid" string="Pemilik" readonly="1"/>
+							</group>
+							<group>
+								<field name="pemenang"/>
+								<field name="deskripsi_barang"/>
+							</group>
+						</group>
+						<notebook>
+							<page String="History Lelang" autofocus="autofocus">
+								<field name="bid_ids">
+									<tree create="false" edit="false">
+										<field name="user_bid"/>
+										<field name="nilai"/>
+										<field name="keterang"/>
+										<field name="create_date"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="view_tree_master_lelang">
+			<field name="name">Auction</field>
+			<field name="model">persebaya.lelang</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="nama_barang"/>
+					<field name="ob"/>
+					<field name="binow"/>
+					<field name="due_date"/>
+					<field name="create_uid"/>
+					<field name="pemenang"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="lelang_search_view">
+            <field name="name">persebaya.lelang.search</field>
+            <field name="model">persebaya.lelang</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="nama_barang"/>
+					<field name="ob"/>
+					<field name="binow"/>
+					<field name="due_date"/>
+					<field name="create_uid"/>
+					<field name="pemenang"/>
+                </search>
+            </field>
+        </record>
+
+		<record model="ir.actions.act_window" id="action_master_lelang">
+			<field name="name">Master Lelang</field>
+			<field name="res_model">persebaya.lelang</field>
+			<field name="view_id" ref="view_tree_master_lelang"/>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Data lelang masih kosong. Masukkan Data terlebih dahulu.</p>
+			</field>
+		</record>
+		
+	</data>
+</odoo>

@@ -1,0 +1,118 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="view_form_master_club">
+			<field name="name">Master Club</field>
+			<field name="model">persebaya.club</field>
+			<field name="arch" type="xml">
+				<form string="Master Club">
+					<header>
+						<button name="action_internal" type="object" string="Set ke Internal" class="oe_highlight oe_read_only" attrs="{'invisible':[('status_team', '=', 'ofc')]}"/>
+						<button name="action_external"  type="object" string="Set ke External" class="oe_highlight oe_read_only" attrs="{'invisible':[('status_team', '=', 'non')]}"/>
+						<field name="status_team" widget="statusbar"/>
+					</header>
+					<sheet>
+						<div class="oe_button_box" name="button_box">
+							<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-check">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;active&quot;}"/>
+                            </button>
+	                    </div>
+						<field name="foto_club" widget='image' class="oe_avatar"/>
+						<div class="oe_title">
+							<h1>
+								<field name="nama" default_focus="1" placeholder="Nama Team"/>
+							</h1>
+						</div>
+						<group>
+							<group>
+								<field name="julukan"/>
+								<field name="kota"/>
+								<field name="negara"/>
+								<field name="federasi"/>
+								<field name="tgl_berdiri"/>
+							</group>
+							<group>
+								<field name="stadion"/>
+								<field name="investor"/>
+								<field name="presiden"/>
+								<field name="pelatih"/>
+								<field name="liga_id"/>
+								<field name="suporter"/>
+							</group>
+						</group>
+						<notebook>
+							<page String="Teams" autofocus="autofocus">
+								<field name="pemain_ids">
+									<tree default_order="department_id" context="{'default_club_id' : active_id}" delete="false">
+										<field name="name"/>
+										<field name="department_id"/>
+										<field name="job_id"/>
+										<field name="no_punggung"/>
+									</tree>
+									<!-- <form>
+										<group>
+											<group>
+												<field name="jadwal_id"/>
+												<field name="time_moments"/>
+												<field name="moments"/>
+												<field name="players_moments"/>
+												<field name="supp_players_moments"/>
+												<field name="club_id"/>
+											</group>
+										</group>
+									</form> -->
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="view_tree_master_club">
+			<field name="name">Master Club</field>
+			<field name="model">persebaya.club</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="nama"/>
+					<field name="kota"/>
+					<field name="stadion"/>
+					<field name="liga_id"/>
+					<field name="pelatih"/>
+					<field name="presiden"/>
+					<field name="status_team"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="club_search_view">
+            <field name="name">persebaya.club.search</field>
+            <field name="model">persebaya.club</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="nama"/>
+					<field name="kota"/>
+					<field name="stadion"/>
+					<field name="liga_id"/>
+					<field name="pelatih"/>
+					<field name="presiden"/>
+					<field name="status_team"/>
+                </search>
+            </field>
+        </record>
+
+		<record model="ir.actions.act_window" id="action_master_club">
+			<field name="name">Master Club</field>
+			<field name="res_model">persebaya.club</field>
+			<field name="view_id" ref="view_tree_master_club"/>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Data Club masih kosong. Masukkan Data terlebih dahulu.</p>
+			</field>
+		</record>
+
+	</data>
+</odoo>

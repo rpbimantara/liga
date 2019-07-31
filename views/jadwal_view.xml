@@ -1,0 +1,241 @@
+<odoo>
+	<data>
+		<template id="assets_backend" name="timers assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/persebaya/static/src/js/timer.js"/>
+            </xpath>
+        </template>
+
+		<record model="ir.ui.view" id="view_form_master_jadwal">
+			<field name="name">Master Jadwal</field>
+			<field name="model">persebaya.jadwal</field>
+			<field name="arch" type="xml">
+				<form string="Master Jadwal">
+					<header>
+						<button name="action_tunda" type="object" string="Tunda" class="oe_read_only" attrs="{'invisible':[('status_jadwal', '=', 'tunda')]}"/>
+						<button name="action_valid"  type="object" string="Validate" class="oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'tunda')]}"/>
+						<button name="action_match"  type="object" string="Start Match" class="oe_highlight oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'valid')]}"/>
+						<field name="status_jadwal" widget="statusbar"/>
+					</header>
+					<sheet>
+						<div class="oe_button_box" name="button_box">
+                        	<button name="open_list_moment" type="object" class="oe_stat_button" icon="fa-clock-o" string="Moments" attrs="{'invisible':[('status_jadwal', '!=', 'main')]}"/>
+                        	<button name="jadwal_terkini" type="object" class="oe_stat_button" icon="fa-home" string="Squad Home"/>
+                        	<!-- <button name="detail" type="object" class="oe_stat_button" icon="fa-plane" string="Squad Away"/> -->
+	                    </div>
+	                    <!-- <div class="oe_title">
+							<h1>
+								<field name="durasi" default_focus="1" placeholder="00:00"/>
+							</h1>
+						</div> -->
+						<group>
+							<group string="MATCH INFO">
+								<field name="liga_id"/>
+								<field name="tgl_main"/>
+								<field name="stadion_id"/>
+							</group>
+							<group string="MATCH DEVICE">
+								<field name="wasit"/>
+								<field name="hakim1"/>
+								<field name="hakim2"/>
+								<field name="inspektur"/>
+								<field name="match_comm"/>
+								<field name="general_coor"/>
+								<field name="media_ofc"/>
+							</group>
+							<group string="HOME">
+								<field name="home"/>
+								<field name="pelatih_home"/>
+								<field name="formasi_home"/>
+								<field name="ht_home"/>
+								<field name="ft_home"/>
+								<field name="xt_home"/>
+								<field name="pinalty_home"/>
+								<field name="kuning_home"/>
+								<field name="merah_home"/>
+								<field name="penguasaan_home" widget="progressbar"/>
+								<field name="tembakan_home"/>
+								<field name="pelanggaran_home"/>
+								<field name="sudut_home"/>
+								<field name="offside_home"/>
+								<field name="penyelamatan_home"/>
+							</group>
+							<group string="AWAY">
+								<field name="away"/>
+								<field name="pelatih_away"/>
+								<field name="formasi_away"/>
+								<field name="ht_away"/>
+								<field name="ft_away"/>
+								<field name="xt_away"/>
+								<field name="pinalty_away"/>
+								<field name="kuning_away"/>
+								<field name="merah_away"/>
+								<field name="penguasaan_away" widget="progressbar"/>
+								<field name="tembakan_away"/>
+								<field name="pelanggaran_away"/>
+								<field name="sudut_away"/>
+								<field name="offside_away"/>
+								<field name="penyelamatan_away"/>
+							</group>
+						</group>
+						<notebook>
+							<page String="Moments" autofocus="autofocus">
+								<field name="moments_ids">
+									<tree edit="false" create="false" context="{'default_jadwal_id' : active_id}">
+										<field name="time_moments"/>
+										<field name="club_id"/>
+										<field name="moments"/>
+										<field name="players_moments"/>
+										<field name="supp_players_moments"/>
+									</tree>
+									<!-- <form>
+										<group>
+											<group>
+												<field name="time_moments"/>
+												<field name="home" invisible="1" readonly="1"/>
+												<field name="away" invisible="1" readonly="1"/>
+												<field name="club_id"/>
+												<field name="moments"/>
+												<field name="players_moments"/>
+												<field name="supp_players_moments"/>
+											</group>
+										</group>
+									</form> -->
+								</field>
+							</page>
+							<page String="Home" autofocus="autofocus">
+								<field name="home_ids">
+									<tree editable="true" nocreate="true" context="{('default_jadwal_id' : active_id)}">
+										<field name="player_id"/>
+										<field name="no_punggung"/>
+										<field name="job_id"/>
+										<field name="club_id"/>
+									</tree>
+									
+								</field>
+							</page>
+							<page String="Away" autofocus="autofocus">
+								<field name="away_ids">
+									<tree editable="true" nocreate="true" context="{'default_jadwal_id' : active_id}">
+										<field name="away" invisible="1" readonly="1"/>
+										<field name="player_id"/>
+										<field name="no_punggung"/>
+										<field name="job_id"/>
+										<field name="club_id"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_tree_master_jadwal">
+			<field name="name">Master Jadwal</field>
+			<field name="model">persebaya.jadwal</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="liga_id"/>
+					<field name="tgl_main"/>
+					<field name="stadion_id"/>
+					<field name="home"/>
+					<field name="away"/>
+					<field name="hasil"/>
+					<field name="status_jadwal"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="adwal_search_view">
+            <field name="name">persebaya.master.jadwal.search</field>
+            <field name="model">persebaya.jadwal</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="liga_id"/>
+					<field name="tgl_main"/>
+					<field name="stadion_id"/>
+					<field name="home"/>
+					<field name="away"/>
+					<field name="hasil"/>
+					<field name="status_jadwal"/>
+                </search>
+            </field>
+        </record>
+
+		<record model="ir.actions.act_window" id="action_master_jadwal">
+			<field name="name">Master Jadwal</field>
+			<field name="res_model">persebaya.jadwal</field>
+			<field name="view_id" ref="view_tree_master_jadwal"/>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Data Jadwal masih kosong. Masukkan Data terlebih dahulu.</p>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_jadwal_team">
+			<field name="name">Master Jadwal team</field>
+			<field name="res_model">persebaya.jadwal</field>
+			<field name="view_id" ref="view_tree_master_jadwal"/>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Data Jadwal masih kosong. Masukkan Data terlebih dahulu.</p>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="view_tree_moments">
+			<field name="name">Moments</field>
+			<field name="model">persebaya.moments</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="time_moments"/>
+					<field name="moments"/>
+					<field name="club_id"/>
+					<field name="players_moments"/>
+					<field name="supp_players_moments"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_form_moments">
+			<field name="name">Moments</field>
+			<field name="model">persebaya.moments</field>
+			<field name="arch" type="xml">
+				<form string="Master Moments">
+					<sheet>
+						<group>
+							<field name="jadwal_id"/>
+							<field name="time_moments"/>
+							<field name="home" invisible="1" readonly="1"/>
+							<field name="away" invisible="1" readonly="1"/>
+							<field name="moments"/>
+							<field name="club_id"/>
+							<field name="players_moments"/>
+							<field name="supp_players_moments"/>
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_show_list_moment" model="ir.actions.act_window">
+            <field name="name">Moments</field>
+            <field name="res_model">persebaya.moments</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+			<field name="context">{'default_jadwal_id':active_id}</field>
+            <field name="view_id" ref="view_tree_moments"/>
+        </record>
+	</data>
+</odoo>

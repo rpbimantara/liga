@@ -1,0 +1,81 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="view_form_master_stadion">
+			<field name="name">Master Stadion</field>
+			<field name="model">persebaya.stadion</field>
+			<field name="arch" type="xml">
+				<form string="Master Stadion">
+					<sheet>
+						<div class="oe_button_box" name="button_box">
+							<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-check">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;active&quot;}"/>
+                            </button>
+	                    </div>
+						<field name="image" widget='image' class="oe_avatar" />
+						<div class="oe_title">
+							<h1>
+								<field name="nama" default_focus="1" placeholder="Nama Stadion"/>
+							</h1>
+						</div>
+						<group>
+							<group>
+								<field name="pemilik"/>
+								<field name="operator"/>
+								<field name="lokasi"/>
+								<field name="koordinat"/>
+								<field name="dibuka"/>
+							</group>
+							<group>
+								<field name="kapasitas"/>
+								<field name="pemakai"/>
+							</group>
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="view_tree_master_stadion">
+			<field name="name">Master Stadion</field>
+			<field name="model">persebaya.stadion</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="nama"/>
+					<field name="pemilik"/>
+					<field name="lokasi"/>
+					<field name="kapasitas"/>
+					<field name="pemakai"/>
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="stadion_search_view">
+            <field name="name">persebaya.stadion.search</field>
+            <field name="model">persebaya.stadion</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="nama"/>
+					<field name="pemilik"/>
+					<field name="lokasi"/>
+					<field name="kapasitas"/>
+					<field name="pemakai"/>
+                </search>
+            </field>
+        </record>
+
+		<record model="ir.actions.act_window" id="action_master_stadion">
+			<field name="name">Master Stadion</field>
+			<field name="res_model">persebaya.stadion</field>
+			<field name="view_id" ref="view_tree_master_stadion"/>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Data Stadion masih kosong. Masukkan Data terlebih dahulu.</p>
+			</field>
+		</record>
+
+	</data>
+</odoo>

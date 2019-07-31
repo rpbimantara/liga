@@ -1,0 +1,67 @@
+<odoo>
+    <data>
+        <record id="view_partner_form_inherit" model="ir.ui.view">
+            <field name="name">res.partner.persebaya.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='type']" position="after">
+                    <field name="nik"/>
+                    <field name="tgl_lahir"/>
+                    <field name="jeniskelamin"/>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="komunitas"/>
+                    <field name="saldo"/>
+                </xpath>
+                <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_users_form_simple_modif_inherit" model="ir.ui.view">
+            <field name="name">res.users.persebaya.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <!-- <xpath expr="//button[@name='preference_change_password']" position="after">
+                    <button name="preference_change_profile" type="object" string="Change profile" class="oe_link"/>
+                </xpath> -->
+                <xpath expr="//field[@name='tz']" position="after">
+                    <field name="club_id" groups="base.group_no_one"/>
+                    <field name="fcm_reg_ids" groups="base.group_no_one"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_partner_tree_inherit" model="ir.ui.view">
+            <field name="name">res.partner.tree.inherit</field>
+            <field name="model">res.partner</field>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Contacts">
+                    <field name="display_name" string="Name"/>
+                    <field name="nik"/>
+                    <field name="tgl_lahir"/>
+                    <field name="email"/>
+                    <field name="saldo"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_show_fans">
+            <field name="name">Master Fans</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_id" ref="view_partner_tree_inherit"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_company','=',0)]</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Data Fans masih kosong. Masukkan Data terlebih dahulu.</p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

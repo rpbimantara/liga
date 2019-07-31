@@ -1,0 +1,121 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="view_form_master_merchandise">
+			<field name="name">Master Merchandise</field>
+			<field name="model">persebaya.merchandise</field>
+			<field name="arch" type="xml">
+				<form string="Master Merchandise">
+					<header>
+						<field name="status_stock" widget="statusbar"/>
+					</header>
+					<sheet>
+						<div class="oe_button_box" name="button_box">
+							<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-check">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;active&quot;}"/>
+                            </button>
+                        	<!-- <button name="open_list_update_harga" type="object" class="oe_stat_button" icon="fa-usd" string="History Harga"/>
+                        	<button name="open_list_update_stock" type="object" class="oe_stat_button" icon="fa-bars" string="History Stock"/> -->
+	                    </div>
+						<field name="image" widget='image' class="oe_avatar" />
+						<div class="oe_title">
+							<h1>
+								<field name="nama_barang" default_focus="1" placeholder="Nama Barang"/>
+							</h1>
+						</div>
+						<group>
+							<group>
+								<field name="code_barang"/>
+								<field name="harga_barang" widget='monetary' options="{'currency_field': 'res_company.currency_id'}"/>
+								<field name="kategori_ukuran"/>
+								<field name="stock_total_barang"/>
+								<field name="status_merch"/>
+								<field name="create_uid" string="Pemilik"/>
+							</group>
+						</group>
+						<notebook>
+							<page String="Stock Per Size" autofocus="autofocus">
+								<field name="ukuran_lines">
+									<tree create="false">
+										<field name="ukuran_barang"/>
+										<field name="stock_ukuran"/>
+									</tree>
+									<form>
+										<group>
+											<field name="merchandise_id"/>
+											<field name="ukuran_barang"/>
+											<field name="stock_ukuran"/>
+										</group>
+									</form>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="view_tree_master_merchandise">
+			<field name="name">Master Merchandise</field>
+			<field name="model">persebaya.merchandise</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="code_barang"/>
+					<field name="nama_barang"/>
+					<field name="harga_barang"/>
+					<field name="stock_total_barang"/>
+					<field name="status_merch"/>
+					<field name="status_stock"/>
+				</tree>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="merchandise_search_view">
+            <field name="name">persebaya.merchandise.search</field>
+            <field name="model">persebaya.merchandise</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="code_barang"/>
+					<field name="nama_barang"/>
+					<field name="status_merch"/>
+					<field name="status_stock"/>
+                </search>
+            </field>
+        </record>
+
+		<!-- <record id="action_show_history_stock" model="ir.actions.act_window">
+            <field name="name">History Update Stock</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">persebaya.update.stock</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tree_update_stock"/>
+        </record>
+
+        <record id="action_show_history_harga" model="ir.actions.act_window">
+            <field name="name">History Update Harga</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">persebaya.update.harga</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tree_update_harga"/>
+        </record> -->
+
+		<record model="ir.actions.act_window" id="action_master_merchandise">
+			<field name="name">Master Merchandise</field>
+			<field name="res_model">persebaya.merchandise</field>
+			<field name="view_id" ref="view_tree_master_merchandise"/>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">Data Merchandise masih kosong. Masukkan Data terlebih dahulu.</p>
+			</field>
+		</record>
+
+		
+
+	</data>
+</odoo>

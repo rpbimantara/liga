@@ -1,0 +1,47 @@
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="update_stock_wizard_form_view">
+            <field name="name">Update Stock</field>
+            <field name="model">persebaya.update.stock</field>
+            <field name="arch" type="xml">
+                <form string="Update Stock">
+	                <group>
+	                    <field name="merchandise_id"/>
+                        <field name="ukuran_id" options="{'no_create': True}" domain="[('merchandise_id','=',merchandise_id)]"/>
+                        <field name="stock_ukuran"/>
+                        <field name="update_stock"/>
+	                </group>
+	                <footer>
+	                 	<button name="tambah_stock" type="object" string="Save"/> or 
+	                 	<button name="" string="Cancel" special="cancel" class="oe_link"/> 
+	                </footer>
+	            </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_tree_update_stock">
+            <field name="name">Update Stock</field>
+            <field name="model">persebaya.update.stock</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="merchandise_id"/>
+                    <field name="ukuran_id"/>
+                    <field name="stock_ukuran"/>
+                    <field name="update_stock"/>
+                    <field name="create_date"/>
+                    <field name="create_uid"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_view_update_stock" model="ir.actions.act_window">
+            <field name="name">Update Stock</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">persebaya.update.stock</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="update_stock_wizard_form_view"/>
+            <field name="target">new</field>
+        </record>
+	</data>
+</odoo>
