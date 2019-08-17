@@ -209,6 +209,27 @@ class PersebayaJadwal(models.Model):
 			vals.append(data)
 		return vals
 
+	@api.model
+	def match_detail(self,id_jadwal):
+		vals = []
+		jadwal_ids = self.env['persebaya.jadwal'].search([('id','=',id_jadwal)])
+		for jadwal in jadwal_ids:
+			date = datetime.strptime(jadwal.tgl_main, '%Y-%m-%d %H:%M:%S') + timedelta(hours=7)
+			data = {
+				'id' : jadwal.id,
+				'liga' : jadwal.liga_id.nama,
+				'stadion' : jadwal.stadion_id.nama,
+				'date' : date.strftime('%Y-%m-%d %H:%M') + ' WIB',
+				'id_home' : jadwal.home.id,
+				'home' : jadwal.home.nama,
+				'imageHome' : jadwal.home.foto_club,
+				'id_away' : jadwal.away.id,
+				'away' : jadwal.away.nama,
+				'imageAway' : jadwal.away.foto_club,
+				'score' : jadwal.ft_home + ' - ' + jadwal.ft_away 
+			}
+			vals.append(data)
+		return vals
 
 	def detail(self):
 		users = self.env['res.users'].search([('active','=',True),('fcm_reg_ids','!=',False)])
@@ -263,6 +284,7 @@ class PersebayaMoments(models.Model):
 	jadwal_id = fields.Many2one('persebaya.jadwal',string="Jadwal",readonly=True)
 	time_moments = fields.Char(string="Time")
 	moments = fields.Selection([
+		('Subtitution', 'Subtitution'),
 		('Tackles', 'Tackles'),
 		('Interception', 'Interception'),
 		('Fouls', 'Fouls'),
@@ -273,13 +295,14 @@ class PersebayaMoments(models.Model):
 		('Corners', 'Corners'),
 		('Goal Kick', 'Goal Kick'),
 		('Goal', 'Goal'),
+		('Goal Penalty', 'Goal Penalty'),
 		('Dribble', 'Dribble'),
 		('Possession Loss', 'Possession Loss'),
 		('Aerial', 'Aerial'),
 		('Passes', 'Passes'),
 		('Key. Passes', 'Key. Passes'),
 		('Assist.', 'Assist.'),
-	], string="Event",required=True)
+	], string="Event",default='Subtitution',required=True)
 	home  = fields.Many2one(related='jadwal_id.home',string="Club Home")
 	away  = fields.Many2one(related='jadwal_id.away',string="Club Home")
 	club_id = fields.Many2one('persebaya.club',string="Club",domain="[('id','in',[home,away])]",required=True)

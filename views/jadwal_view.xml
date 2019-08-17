@@ -1,10 +1,10 @@
 <odoo>
 	<data>
 		<template id="assets_backend" name="timers assets" inherit_id="web.assets_backend">
-            <xpath expr="." position="inside">
-                <script type="text/javascript" src="/persebaya/static/src/js/timer.js"/>
-            </xpath>
-        </template>
+			<xpath expr="." position="inside">
+				<script type="text/javascript" src="/persebaya/static/src/js/timer.js"/>
+			</xpath>
+		</template>
 
 		<record model="ir.ui.view" id="view_form_master_jadwal">
 			<field name="name">Master Jadwal</field>
@@ -13,17 +13,17 @@
 				<form string="Master Jadwal">
 					<header>
 						<button name="action_tunda" type="object" string="Tunda" class="oe_read_only" attrs="{'invisible':[('status_jadwal', '=', 'tunda')]}"/>
-						<button name="action_valid"  type="object" string="Validate" class="oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'tunda')]}"/>
-						<button name="action_match"  type="object" string="Start Match" class="oe_highlight oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'valid')]}"/>
+						<button name="action_valid" type="object" string="Validate" class="oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'tunda')]}"/>
+						<button name="action_match" type="object" string="Start Match" class="oe_highlight oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'valid')]}"/>
 						<field name="status_jadwal" widget="statusbar"/>
 					</header>
 					<sheet>
 						<div class="oe_button_box" name="button_box">
-                        	<button name="open_list_moment" type="object" class="oe_stat_button" icon="fa-clock-o" string="Moments" attrs="{'invisible':[('status_jadwal', '!=', 'main')]}"/>
-                        	<button name="jadwal_terkini" type="object" class="oe_stat_button" icon="fa-home" string="Squad Home"/>
-                        	<!-- <button name="detail" type="object" class="oe_stat_button" icon="fa-plane" string="Squad Away"/> -->
-	                    </div>
-	                    <!-- <div class="oe_title">
+							<button name="open_list_moment" type="object" class="oe_stat_button" icon="fa-clock-o" string="Moments" attrs="{'invisible':[('status_jadwal', '!=', 'main')]}"/>
+							<button name="jadwal_terkini" type="object" class="oe_stat_button" icon="fa-home" string="Squad Home"/>
+							<!-- <button name="detail" type="object" class="oe_stat_button" icon="fa-plane" string="Squad Away"/> -->
+						</div>
+						<!-- <div class="oe_title">
 							<h1>
 								<field name="durasi" default_focus="1" placeholder="00:00"/>
 							</h1>
@@ -104,19 +104,30 @@
 								</field>
 							</page>
 							<page String="Home" autofocus="autofocus">
-								<field name="home_ids">
-									<tree editable="true" nocreate="true" context="{('default_jadwal_id' : active_id)}">
+								<field name="home_ids" context="{('default_jadwal_id' : active_id)}">
+									<tree>
 										<field name="player_id"/>
 										<field name="no_punggung"/>
 										<field name="job_id"/>
 										<field name="club_id"/>
 									</tree>
-									
+									<form>
+										<group>
+											<group>
+												<field name="jadwal_id"/>
+												<field name="away"/>
+												<field name="player_id"/>
+												<field name="no_punggung"/>
+												<field name="job_id"/>
+												<field name="club_id"/>
+											</group>
+										</group>
+									</form>
 								</field>
 							</page>
 							<page String="Away" autofocus="autofocus">
 								<field name="away_ids">
-									<tree editable="true" nocreate="true" context="{'default_jadwal_id' : active_id}">
+									<tree editable="true" context="{'default_jadwal_id' : active_id}">
 										<field name="away" invisible="1" readonly="1"/>
 										<field name="player_id"/>
 										<field name="no_punggung"/>
@@ -152,20 +163,20 @@
 		</record>
 
 		<record model="ir.ui.view" id="adwal_search_view">
-            <field name="name">persebaya.master.jadwal.search</field>
-            <field name="model">persebaya.jadwal</field>
-            <field name="arch" type="xml">
-                <search>
-                    <field name="liga_id"/>
+			<field name="name">persebaya.master.jadwal.search</field>
+			<field name="model">persebaya.jadwal</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="liga_id"/>
 					<field name="tgl_main"/>
 					<field name="stadion_id"/>
 					<field name="home"/>
 					<field name="away"/>
 					<field name="hasil"/>
 					<field name="status_jadwal"/>
-                </search>
-            </field>
-        </record>
+				</search>
+			</field>
+		</record>
 
 		<record model="ir.actions.act_window" id="action_master_jadwal">
 			<field name="name">Master Jadwal</field>
@@ -230,12 +241,12 @@
 		</record>
 
 		<record id="action_show_list_moment" model="ir.actions.act_window">
-            <field name="name">Moments</field>
-            <field name="res_model">persebaya.moments</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+			<field name="name">Moments</field>
+			<field name="res_model">persebaya.moments</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
 			<field name="context">{'default_jadwal_id':active_id}</field>
-            <field name="view_id" ref="view_tree_moments"/>
-        </record>
+			<field name="view_id" ref="view_tree_moments"/>
+		</record>
 	</data>
 </odoo>
