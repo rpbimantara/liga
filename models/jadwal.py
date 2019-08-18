@@ -353,20 +353,26 @@ class PersebayaLineUpHome(models.Model):
 
 	jadwal_id = fields.Many2one('persebaya.jadwal',string="Jadwal",readonly=True)
 	home = fields.Many2one(related='jadwal_id.home',string="Club Home")
-	player_id = fields.Many2one('hr.employee',string="Players",domain="[('club_id','=',club_id)]")
+	player_id = fields.Many2one('hr.employee',string="Players",domain="[('club_id','=',home)]")
 	department_id = fields.Many2one(related='player_id.department_id',string="Department",readonly=True)
 	job_id = fields.Many2one(related='player_id.job_id',string="Position",readonly=True)
 	no_punggung = fields.Integer(related='player_id.no_punggung',string="Players No.",readonly=True)
-	club_id = fields.Many2one('persebaya.club',string="Club",domain="[('id','in',[home])]",readonly=True)
+	status_pemain = fields.Selection([
+		('core', 'Core'),
+		('subtitute', 'Subtitute')
+	], string='Status Pemain',default='core')
 
 class PersebayaLineUpAway(models.Model):
 	_name = 'persebaya.line.up.away'
 	_inherit = ['mail.thread', 'ir.needaction_mixin']
 
 	jadwal_id = fields.Many2one('persebaya.jadwal',string="Jadwal",readonly=True)
-	away = fields.Many2one(related='jadwal_id.away',string="Club Home")
-	player_id = fields.Many2one('hr.employee',string="Players",domain="[('club_id','in',[away])]")
+	away = fields.Many2one(related='jadwal_id.away',string="Club Away")
+	player_id = fields.Many2one('hr.employee',string="Players",domain="[('club_id','=',jadwal_id.away)]")
 	department_id = fields.Many2one(related='player_id.department_id',string="Department",readonly=True)
 	job_id = fields.Many2one(related='player_id.job_id',string="Position",readonly=True)
 	no_punggung = fields.Integer(related='player_id.no_punggung',string="Players No.",readonly=True)
-	club_id = fields.Many2one(related='player_id.club_id',string="Club",readonly=True)
+	status_pemain = fields.Selection([
+			('core', 'Core'),
+			('subtitute', 'Subtitute')
+		], string='Status Pemain',default='core')

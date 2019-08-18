@@ -104,22 +104,21 @@
 								</field>
 							</page>
 							<page String="Home" autofocus="autofocus">
-								<field name="home_ids" context="{('default_jadwal_id' : active_id)}">
-									<tree>
+								<field name="home_ids" >
+									<tree editable="true" context="{('default_jadwal_id' : active_id)}">
 										<field name="player_id"/>
 										<field name="no_punggung"/>
 										<field name="job_id"/>
-										<field name="club_id"/>
+										<field name="status_pemain"/>
 									</tree>
 									<form>
 										<group>
 											<group>
-												<field name="jadwal_id"/>
-												<field name="away"/>
+												<field name="home"/>
 												<field name="player_id"/>
 												<field name="no_punggung"/>
 												<field name="job_id"/>
-												<field name="club_id"/>
+												<field name="status_pemain"/>
 											</group>
 										</group>
 									</form>
@@ -128,12 +127,22 @@
 							<page String="Away" autofocus="autofocus">
 								<field name="away_ids">
 									<tree editable="true" context="{'default_jadwal_id' : active_id}">
-										<field name="away" invisible="1" readonly="1"/>
 										<field name="player_id"/>
 										<field name="no_punggung"/>
 										<field name="job_id"/>
-										<field name="club_id"/>
+										<field name="status_pemain"/>
 									</tree>
+									<form>
+										<group>
+											<group>
+												<field name="away"/>
+												<field name="player_id"/>
+												<field name="no_punggung"/>
+												<field name="job_id"/>
+												<field name="status_pemain"/>
+											</group>
+										</group>
+									</form>
 								</field>
 							</page>
 						</notebook>
