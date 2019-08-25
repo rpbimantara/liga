@@ -20,7 +20,7 @@
 					<sheet>
 						<div class="oe_button_box" name="button_box">
 							<button name="open_list_moment" type="object" class="oe_stat_button" icon="fa-clock-o" string="Moments" attrs="{'invisible':[('status_jadwal', '!=', 'main')]}"/>
-							<button name="jadwal_terkini" type="object" class="oe_stat_button" icon="fa-home" string="Squad Home"/>
+							<button name="list_jadwal_club" type="object" class="oe_stat_button" icon="fa-home" string="Squad Home"/>
 							<!-- <button name="detail" type="object" class="oe_stat_button" icon="fa-plane" string="Squad Away"/> -->
 						</div>
 						<!-- <div class="oe_title">
@@ -104,8 +104,10 @@
 								</field>
 							</page>
 							<page String="Home" autofocus="autofocus">
-								<field name="home_ids" >
+								<field name="home_ids">
 									<tree editable="true" context="{('default_jadwal_id' : active_id)}">
+										<field name="jadwal_id" invisible="1"/>
+										<field name="home" invisible="1"/>
 										<field name="player_id"/>
 										<field name="no_punggung"/>
 										<field name="job_id"/>
@@ -114,7 +116,6 @@
 									<form>
 										<group>
 											<group>
-												<field name="home"/>
 												<field name="player_id"/>
 												<field name="no_punggung"/>
 												<field name="job_id"/>
@@ -127,6 +128,8 @@
 							<page String="Away" autofocus="autofocus">
 								<field name="away_ids">
 									<tree editable="true" context="{'default_jadwal_id' : active_id}">
+										<field name="jadwal_id" invisible="1"/>
+										<field name="away" invisible="1"/>
 										<field name="player_id"/>
 										<field name="no_punggung"/>
 										<field name="job_id"/>
@@ -135,7 +138,6 @@
 									<form>
 										<group>
 											<group>
-												<field name="away"/>
 												<field name="player_id"/>
 												<field name="no_punggung"/>
 												<field name="job_id"/>

@@ -57,22 +57,6 @@ class PersebayaLiga(models.Model):
 		for s in self:
 			s.jmlh_tim = len([line for line in s.klasemen_ids])
 
-	def klasemen(self):
-		vals = []
-		liga_ids = self.env['persebaya.liga'].search([('id','=',10)])
-		for klasemen in liga_ids.klasemen_ids:
-			data = {
-					'id' : klasemen.id,
-					'id_club' : klasemen.club_id.id,
-					'foto_club' : klasemen.club_id.foto_club,
-					'nama_club' : klasemen.club_id.nama,
-					'play' : klasemen.play,
-					'selisih_gol' : str(klasemen.gm - klasemen.gk),
-					'point' : klasemen.point
-					}
-			vals.append(data)
-		return vals
-
 class PersebayaLigaKlasemen(models.Model):
 	_name = 'persebaya.liga.klasemen'
 	_inherit = ['mail.thread', 'ir.needaction_mixin']
@@ -96,11 +80,11 @@ class PersebayaLigaKlasemen(models.Model):
 
 		return res
 
-
-	def klasemen(self):
+	@api.model
+	def klasemen(self,id_liga):
 		vals = []
-		klasemen_ids = self.env['persebaya.liga.klasemen'].search([])
-		print klasemen_ids
+		klasemen_ids = self.env['persebaya.liga.klasemen'].search([('liga_id','=',id_liga)])
+		# print klasemen_ids
 		for klasemen in klasemen_ids:
 			data = {
 					'id' : klasemen.id,
@@ -111,5 +95,5 @@ class PersebayaLigaKlasemen(models.Model):
 					'point' : klasemen.point
 					}
 			vals.append(data)
-		print vals
+		# print vals
 		return vals

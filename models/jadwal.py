@@ -152,7 +152,7 @@ class PersebayaJadwal(models.Model):
 	@api.model
 	def list_jadwal(self,club_id,liga_id):
 		vals = []
-		jadwal_ids = self.env['persebaya.jadwal'].search([('liga_id','=',str(liga_id)),'|',('away','=',club_id),('home','=',club_id)])
+		jadwal_ids = self.env['persebaya.jadwal'].search(['|',('away','=',club_id),('home','=',club_id),('liga_id','=',liga_id)])
 		for jadwal in jadwal_ids:
 			date = datetime.strptime(jadwal.tgl_main, '%Y-%m-%d %H:%M:%S') + timedelta(hours=7)
 			foto_club = ''
@@ -180,9 +180,12 @@ class PersebayaJadwal(models.Model):
 		return vals
 
 	@api.model
-	def list_jadwal_club(self,club_id,status):
+	def list_jadwal_club(self,club_id,liga_id,status):
+		club_id = 42
+		liga_id = 11
+		status = ['selesai']
 		vals = []
-		jadwal_ids = self.env['persebaya.jadwal'].search([('liga_id','=',str(liga_id)),'|',('away','=',club_id),('home','=',club_id),('status_jadwal','in',status)])
+		jadwal_ids = self.env['persebaya.jadwal'].search(['|',('away','=',club_id),('home','=',club_id),('status_jadwal','in',[str(item) for item in status]),('liga_id','=',liga_id)])
 		for jadwal in jadwal_ids:
 			date = datetime.strptime(jadwal.tgl_main, '%Y-%m-%d %H:%M:%S') + timedelta(hours=7)
 			foto_club = ''
@@ -368,7 +371,7 @@ class PersebayaLineUpAway(models.Model):
 
 	jadwal_id = fields.Many2one('persebaya.jadwal',string="Jadwal",readonly=True)
 	away = fields.Many2one(related='jadwal_id.away',string="Club Away")
-	player_id = fields.Many2one('hr.employee',string="Players",domain="[('club_id','=',jadwal_id.away)]")
+	player_id = fields.Many2one('hr.employee',string="Players",domain="[('club_id','=',away)]")
 	department_id = fields.Many2one(related='player_id.department_id',string="Department",readonly=True)
 	job_id = fields.Many2one(related='player_id.job_id',string="Position",readonly=True)
 	no_punggung = fields.Integer(related='player_id.no_punggung',string="Players No.",readonly=True)

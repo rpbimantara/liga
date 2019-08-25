@@ -17,7 +17,7 @@ class PersebayaClub(models.Model):
 	stadion = fields.Many2one('persebaya.stadion',string="Home Base", required=True,track_visibility='onchange')
 	investor = fields.Char(string="investor",track_visibility='onchange')
 	presiden = fields.Char(string="President ",track_visibility='onchange')
-	pelatih = fields.Many2one('hr.employee',string="Pelatih Kepala",compute="_compute_pelatih",track_visibility='onchange')
+	pelatih = fields.Many2one('hr.employee',string="Pelatih Kepala")
 	liga_id = fields.Many2one('persebaya.liga',string="Liga yg di ikuti",track_visibility='onchange')
 	suporter = fields.Char(string="Kelompok Supporter",track_visibility='onchange')
 	status_team = fields.Selection([
@@ -63,7 +63,8 @@ class PersebayaClub(models.Model):
 
 	@api.model
 	def get_summary(self,id_club):
-		club_ids = self.env['persebaya.club'].search([('club_id','=',id_club)])
+		club_ids = self.env['persebaya.club'].search([('id','=',42)])
+		print(club_ids)
 		vals = []
 		for club in club_ids:
 			data = {
