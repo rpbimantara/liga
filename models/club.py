@@ -7,24 +7,24 @@ class PersebayaClub(models.Model):
 	_inherit = ['mail.thread', 'ir.needaction_mixin']
 
 	active = fields.Boolean(default=True, help="The active field allows you to hide the merchandise without removing it.",track_visibility='onchange')
-	nama = fields.Char(string="Nama Team", required=True,track_visibility='onchange')
-	foto_club = fields.Binary(string="Foto Club",store=True,track_visibility='onchange')
-	julukan = fields.Char(string="Nama Julukan",track_visibility='onchange')
-	kota = fields.Char(string="Kota Domisili", required=True,track_visibility='onchange')
-	negara = fields.Char(string="Negara", required=True,track_visibility='onchange')
-	federasi = fields.Char(string="Federasi", default="PSSI",track_visibility='onchange')
-	tgl_berdiri = fields.Date(string="Tanggal Berdiri", required=True,track_visibility='onchange')
+	nama = fields.Char(string="Club Name", required=True,track_visibility='onchange')
+	foto_club = fields.Binary(string="Logo",store=True,track_visibility='onchange')
+	julukan = fields.Char(string="Nickname",track_visibility='onchange')
+	kota = fields.Char(string="City", required=True,track_visibility='onchange')
+	negara = fields.Char(string="Country", required=True,track_visibility='onchange')
+	federasi = fields.Char(string="Federation", default="PSSI",track_visibility='onchange')
+	tgl_berdiri = fields.Date(string="Established", required=True,track_visibility='onchange')
 	stadion = fields.Many2one('persebaya.stadion',string="Home Base", required=True,track_visibility='onchange')
-	investor = fields.Char(string="investor",track_visibility='onchange')
+	investor = fields.Char(string="Investor",track_visibility='onchange')
 	presiden = fields.Char(string="President ",track_visibility='onchange')
-	pelatih = fields.Many2one('hr.employee',string="Pelatih Kepala")
-	liga_id = fields.Many2one('persebaya.liga',string="Liga yg di ikuti",track_visibility='onchange')
-	suporter = fields.Char(string="Kelompok Supporter",track_visibility='onchange')
+	pelatih = fields.Many2one('hr.employee',string="Head Coach")
+	liga_id = fields.Many2one('persebaya.liga',string="League",track_visibility='onchange')
+	suporter = fields.Char(string="Supporter",track_visibility='onchange')
 	status_team = fields.Selection([
 		('ofc', 'Internal'),
 		('non', 'External'),
 	], string="Status Team", default='non', readonly=True,track_visibility='onchange')
-	pemain_ids = fields.One2many('hr.employee','club_id',string="Data Pemain")
+	pemain_ids = fields.One2many('hr.employee','club_id',string="Squads")
 
 
 	@api.multi
@@ -62,7 +62,7 @@ class PersebayaClub(models.Model):
 			s.pelatih = pelatih_id
 
 	@api.model
-	def get_summary(self,id_club):
+	def get_summary(self,club_id):
 		club_ids = self.env['persebaya.club'].search([('id','=',42)])
 		print(club_ids)
 		vals = []

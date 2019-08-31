@@ -34,15 +34,15 @@
 								<field name="stadion"/>
 								<field name="investor"/>
 								<field name="presiden"/>
-								<field name="pelatih"/>
-								<field name="liga_id"/>
+								<field name="pelatih" widget="selection" domain="[('department_id','=',9),('club_id','=',active_id)]"/>
+								<field name="liga_id" widget="selection"/>
 								<field name="suporter"/>
 							</group>
 						</group>
 						<notebook>
 							<page String="Teams" autofocus="autofocus">
-								<field name="pemain_ids">
-									<tree default_order="department_id" context="{'default_club_id' : active_id}" delete="false">
+								<field name="pemain_ids" options="{'no_create': True, 'no_create_edit':True}">
+									<tree default_order="department_id" context="{'default_club_id' : active_id}"  delete="false">
 										<field name="name"/>
 										<field name="department_id"/>
 										<field name="job_id"/>

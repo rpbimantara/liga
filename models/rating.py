@@ -5,6 +5,6 @@ class PersebayaPerfomance(models.Model):
 	# _inherit = ['mail.thread', 'ir.needaction_mix']
 
 	employee_id = fields.Many2one('hr.employee',string="Name",readonly=True)
-	jadwal_id = fields.Many2one('persebaya.jadwal',string="Jadwal",readonly=True)
+	jadwal_id = fields.Many2one('persebaya.jadwal',string="Schedule",readonly=True)
 	rating = fields.Integer(string="Rating")
 	review = fields.Char(string="Review")

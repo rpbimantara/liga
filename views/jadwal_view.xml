@@ -20,7 +20,7 @@
 					<sheet>
 						<div class="oe_button_box" name="button_box">
 							<button name="open_list_moment" type="object" class="oe_stat_button" icon="fa-clock-o" string="Moments" attrs="{'invisible':[('status_jadwal', '!=', 'main')]}"/>
-							<button name="list_jadwal_club" type="object" class="oe_stat_button" icon="fa-home" string="Squad Home"/>
+							<button name="jadwal_terkini" type="object" class="oe_stat_button" icon="fa-home" string="Squad Home"/>
 							<!-- <button name="detail" type="object" class="oe_stat_button" icon="fa-plane" string="Squad Away"/> -->
 						</div>
 						<!-- <div class="oe_title">

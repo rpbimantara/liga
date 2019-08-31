@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import fields, models, api
 
 class ResPartnerInherit(models.Model):
 	_inherit = 'res.partner'
@@ -24,9 +24,8 @@ class ResPartnerInherit(models.Model):
 		help="This account will be used instead of the default one as the payable account for the current partner",
 		required=False)
 
-	# def _default_receivable(self):
-	# 	return self.env['account.account'].search([('code', '=', "1")], limit=1).id
-
-
-	# def _default_payable(self):
-	# 	return self.env['account.account'].search([('code', '=', "2")], limit=1).id
+	@api.model
+	def create(self,vals):
+		res = super(ResPartnerInherit,self).create(vals)
+		res['supplier'] = True
+		return res

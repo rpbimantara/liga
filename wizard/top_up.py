@@ -7,7 +7,7 @@ class PersebayaTopup(models.Model):
 
 	nik = fields.Char(string="NIK",size=16)
 	nama = fields.Many2one('res.partner',string="Name",readonly=True)
-	saldo_terkini = fields.Integer(related='nama.saldo',string="Coin",readonly=True)
+	saldo_terkini = fields.Integer(related='nama.saldo',string="Coin",readonly=True,store=True)
 	topup = fields.Integer(string="Top Up Value")
 
 	@api.onchange('nik')
@@ -17,8 +17,7 @@ class PersebayaTopup(models.Model):
 			self.nama = partner_id.id
 
 	def proses_top_up(self):
-		if self.nama:
-			# if self.topup
-			# raise UserError('Jumlah amount harus sama dengan jumlah amount di pengajuan bank!')
-			saldo = self.saldo_terkini + self.topup
-			self.nama.saldo = saldo
+		if self.topup > 1000000:
+			partner_id = self.env['res.partner'].search([('nik','=',self.nik)])
+			saldo = partner_id.saldo + self.topup
+			partner_id.write({'saldo' : saldo})

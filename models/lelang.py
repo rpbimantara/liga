@@ -8,20 +8,20 @@ class LelangPersebaya(models.Model):
 	_name = 'persebaya.lelang'
 	_inherit = ['mail.thread', 'ir.needaction_mixin']
 
-	nama_barang = fields.Char(string="Nama Barang",required=True)
+	nama_barang = fields.Char(string="Name",required=True)
 	active = fields.Boolean(default=True, help="Uncheck if your item is second item.")
-	foto_lelang = fields.Binary(string="Foto Barang",required=True)
-	deskripsi_barang = fields.Text(string="Deskripsi")
+	foto_lelang = fields.Binary(string="Picture",required=True)
+	deskripsi_barang = fields.Text(string="Description")
 	ob = fields.Integer(string="Open Bid",required=True)
 	inc = fields.Integer(string="Increment",required=True,readonly=False)
 	binow = fields.Integer(string="BIN",required=True)
-	due_date = fields.Datetime(string="Waktu Berakhir")
-	pemenang = fields.Many2one('res.users',string="Pemenang",readonly=True)
-	bid_ids = fields.One2many('persebaya.lelang.bid','lelang_id',string="History Lelang")
+	due_date = fields.Datetime(string="End Date")
+	pemenang = fields.Many2one('res.users',string="Winner",readonly=True)
+	bid_ids = fields.One2many('persebaya.lelang.bid','lelang_id',string="Lelang History")
 	status_lelang = fields.Selection([
 		('jalan', 'Berjalan'),
 		('selesai', 'Selesai'),
-	], string="Status Lelang", default='jalan', readonly=True)
+	], string="State", default='jalan', readonly=True)
 	create_uid = fields.Many2one('res.users',default=lambda self: self.env.user.id)
 
 	@api.multi
@@ -72,9 +72,9 @@ class BidLelangPersebaya(models.Model):
 	_inherit = ['mail.thread', 'ir.needaction_mixin']
 
 	lelang_id = fields.Many2one('persebaya.lelang',string="Lelang")
-	user_bid = fields.Many2one('res.users',string="Peserta")
+	user_bid = fields.Many2one('res.users',string="Participant")
 	nilai = fields.Integer(string="Nominal",required=True)
-	keterang = fields.Char(string="Ket.")
+	keterang = fields.Char(string="Note")
 
 	# @api.multi
 	# def name_get(self):

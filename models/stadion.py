@@ -7,15 +7,15 @@ class StadionPersebaya(models.Model):
 	_inherit = ['mail.thread', 'ir.needaction_mixin']
 
 	active = fields.Boolean(default=True, help="The active field allows you to hide the merchandise without removing it.")
-	nama = fields.Char(string="Nama Stadion",required=True)
-	image = fields.Binary(string="Foto Stadion")
-	pemilik =  fields.Char(string="Pemilik Stadion")
-	operator = fields.Char(string="Operator Stadion",required=True)
-	lokasi = fields.Char(string="Lokasi")
+	nama = fields.Char(string="Name",required=True)
+	image = fields.Binary(string="Picture")
+	pemilik =  fields.Char(string="Owner")
+	operator = fields.Char(string="Operator",required=True)
+	lokasi = fields.Char(string="Location")
 	koordinat = fields.Char(string="GeoLocation")
-	dibuka = fields.Char(string="Dibuka pada")
-	kapasitas = fields.Char(string="Kapasitas Stadion")
-	pemakai = fields.Char(string="Pemakai Stadion")
+	dibuka = fields.Char(string="Opening")
+	kapasitas = fields.Char(string="Capacity")
+	pemakai = fields.Char(string="User")
 
 	@api.multi
 	def name_get(self):

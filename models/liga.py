@@ -7,20 +7,20 @@ class PersebayaLiga(models.Model):
 	_name = 'persebaya.liga'
 	_inherit = ['mail.thread', 'ir.needaction_mixin']
 
-	nama = fields.Char(string="Nama Liga", required=True)
-	image = fields.Binary(string="Foto Liga")
-	negara = fields.Many2one('res.country',string="Negara")
-	thn_bentuk = fields.Date(string="Dibentuk")
-	jmlh_tim = fields.Integer(string="Jumlah Tim",compute='_compute_klasemen')
-	juara_lalu = fields.Many2one('persebaya.club', string="Juara bertahan", readonly=True)
-	klub_sukses = fields.Many2one('persebaya.club', string="Klub Tersukses", readonly=True)
+	nama = fields.Char(string="League", required=True)
+	image = fields.Binary(string="Logo")
+	negara = fields.Many2one('res.country',string="Country")
+	thn_bentuk = fields.Date(string="Start Date")
+	jmlh_tim = fields.Integer(string="Teams Participant",compute='_compute_klasemen')
+	juara_lalu = fields.Many2one('persebaya.club', string="Last Season", readonly=True)
+	klub_sukses = fields.Many2one('persebaya.club', string="Champion", readonly=True)
 	website = fields.Char(string="Website")
-	klasemen_ids = fields.One2many('persebaya.liga.klasemen','liga_id', string="Klasemen")
-	tgl_validasi = fields.Datetime(string="Tanggal Validasi", readonly=True)
+	klasemen_ids = fields.One2many('persebaya.liga.klasemen','liga_id', string="Standings")
+	tgl_validasi = fields.Datetime(string="Validation Date", readonly=True)
 	status_liga = fields.Selection([
 		('draft', 'DRAFT'),
 		('valid', 'VALID'),
-	], string="Status Liga", default='draft')
+	], string="State", default='draft')
 
 	@api.multi
 	def name_get(self):

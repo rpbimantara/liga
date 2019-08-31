@@ -19,12 +19,12 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mail','hr','event','sale'],
+    'depends': ['base','mail','hr','event','sale','purchase','account_accountant'],
 
     # always loaded
     'data': [
         'data/ir_cron.xml',
-        'security/ir.model.access.csv',
+        # 'security/ir.model.access.csv',
         'wizard/top_up_view.xml',
         'views/lelang_view.xml',
         'views/club_view.xml',

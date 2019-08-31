@@ -103,17 +103,14 @@ class PersebayaJadwal(models.Model):
 		vals = []
 		data = {}
 		date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-		jadwal_ids = self.env['persebaya.jadwal'].search([('tgl_main','<',date),('liga_id','=',str(liga_id)),'|',('away','=',club_id),('home','=',club_id)],limit=1,order="id desc")
-		nexts = self.env['persebaya.jadwal'].search([('tgl_main','>',date),('liga_id','=',str(liga_id)),'|',('away','=',club_id),('home','=',club_id)],limit=2)
-		# self._cr.execute("""SELECT id
-		# 					FROM persebaya_jadwal a 
-		# 					WHERE a.tgl_main >= '2019-07-30 08:12:33' AND 
-		# 						  a.liga_id = 11 AND
-		# 						  a.id IN 
-		# 						  (SELECT id FROM persebaya_jadwal b 
-		# 							WHERE b.home = 80 OR b.away = 80 )
-		# 					LIMIT 2;""")
-		# nexts = self.env['persebaya.jadwal'].search([('id','in',self._cr.fetchall())])
+		jadwal_ids = self.env['persebaya.jadwal'].search(['|',('away','=',club_id),('home','=',club_id),('tgl_main','<',date),('liga_id','=',liga_id)],limit=1,order="id desc")
+		nexts = self.env['persebaya.jadwal'].search(['|',('away','=',club_id),('home','=',club_id),('tgl_main','>',date),('liga_id','=',liga_id)],limit=2)
+		skornow = ''
+		if nexts[0].status_jadwal  == 'main' or nexts[0].status_jadwal == 'selesai':
+			skornow = nexts[0].ft_home + ' - ' + nexts[0].ft_away
+		else:
+			skornow = ' VS '
+
 		data = {
 				'id_last' : jadwal_ids[0].id,
 				'image_home_last' :jadwal_ids[0].home.foto_club,
@@ -132,6 +129,7 @@ class PersebayaJadwal(models.Model):
 				'away' : nexts[0].away.nama,
 				'ft_home' : nexts[0].ft_home,
 				'ft_away' : nexts[0].ft_away,
+				'skornow' : skornow,
 				'stadion' : nexts[0].stadion_id.nama,
 				'date' : str(datetime.strptime(nexts[0].tgl_main, '%Y-%m-%d %H:%M:%S') + timedelta(hours=7)),
 				'liga' : nexts[0].liga_id.nama,
@@ -216,6 +214,11 @@ class PersebayaJadwal(models.Model):
 	def match_detail(self,id_jadwal):
 		vals = []
 		jadwal_ids = self.env['persebaya.jadwal'].search([('id','=',id_jadwal)])
+		skornow = ''
+		if jadwal_ids.status_jadwal  == 'main' or jadwal_ids.status_jadwal == 'selesai':
+			skornow = jadwal_ids.ft_home + ' - ' + jadwal_ids.ft_away
+		else:
+			skornow = ' VS '
 		for jadwal in jadwal_ids:
 			date = datetime.strptime(jadwal.tgl_main, '%Y-%m-%d %H:%M:%S') + timedelta(hours=7)
 			data = {
@@ -229,7 +232,7 @@ class PersebayaJadwal(models.Model):
 				'id_away' : jadwal.away.id,
 				'away' : jadwal.away.nama,
 				'imageAway' : jadwal.away.foto_club,
-				'score' : jadwal.ft_home + ' - ' + jadwal.ft_away 
+				'score' : skornow
 			}
 			vals.append(data)
 		return vals
@@ -237,7 +240,6 @@ class PersebayaJadwal(models.Model):
 	def detail(self):
 		users = self.env['res.users'].search([('active','=',True),('fcm_reg_ids','!=',False)])
 		fcm_regids = [i.fcm_reg_ids.encode('ascii','ignore') for i in users]
-		print fcm_regids
 		message_title = "Persebaya Fans"
 		message_body  = "Today is Persebaya Day : " + self.home.nama + " VS " + self.away.nama
 		data = {'model':'persebaya.jadwal', 'id': self.id}

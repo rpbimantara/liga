@@ -1,50 +1,61 @@
 <odoo>
 	<data>
 		<record id="view_employee_form_inherit" model="ir.ui.view">
-            <field name="name">hr.employee.persebaya.inherit</field>
-            <field name="model">hr.employee</field>
-            <field name="inherit_id" ref="hr.view_employee_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//page[@name='personal_information']" position="after">
-                	<page String="Performance Information">
-                		<group>
-                			<group string="Defensive">
-                				 <field name="tekel_sukses"/>
-			                    <field name="penyelamatan"/>
-			                    <field name="pelanggaran"/>
-			                    <field name="kartu_kuning"/>
-			                    <field name="kartu_merah"/>
-			                    <field name="offsides"/>
-			                    <field name="sapu_bersih"/>
-			                    <field name="penghadangan"/>
-			                    <field name="sukses_rebut"/>
-                			</group>
-                			<group string="Offensive">
-			                    <field name="gol_kick"/>
-			                    <field name="gol"/>
-			                    <field name="drible_sukses"/>
-			                    <field name="lepas_control"/>
-			                    <field name="sundulan_kepala"/>
-                			</group>
-                			<group string="Passing">
-                				<field name="passing_sukses"/>
-			                    <field name="passing_gagal"/>
-			                    <field name="assist"/>
-                			</group>
-		                </group>
-	                </page>
-                </xpath>
-                 <xpath expr="//field[@name='calendar_id']" position="replace">
-			            <field name="club_id"/>
-			            <field name="no_punggung"/>
-                 </xpath>
-                 <xpath expr="//sheet" position="before">
-			            <header>
-							<field name="status_pemain" widget="statusbar"/>
-						</header>
-                 </xpath>
-                 
-            </field>
-        </record>
+			<field name="name">hr.employee.persebaya.inherit</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='job_id']" position="attributes">
+				    <attribute name = "domain">[('department_id','=',department_id)]</attribute>
+				</xpath>
+
+				<xpath expr="//field[@name='parent_id']" position="attributes">
+				    <attribute name = "domain">[('department_id','=',10)]</attribute>
+				</xpath>
+
+				<xpath expr="//field[@name='coach_id']" position="attributes">
+				    <attribute name = "domain">[('department_id','=',9)]</attribute>
+				</xpath>
+				<xpath expr="//page[@name='personal_information']" position="after">
+					<page String="Performance Information">
+						<group>
+							<group string="Defensive">
+								<field name="tekel_sukses"/>
+								<field name="penyelamatan"/>
+								<field name="pelanggaran"/>
+								<field name="kartu_kuning"/>
+								<field name="kartu_merah"/>
+								<field name="offsides"/>
+								<field name="sapu_bersih"/>
+								<field name="penghadangan"/>
+								<field name="sukses_rebut"/>
+							</group>
+							<group string="Offensive">
+								<field name="gol_kick"/>
+								<field name="gol"/>
+								<field name="drible_sukses"/>
+								<field name="lepas_control"/>
+								<field name="sundulan_kepala"/>
+							</group>
+							<group string="Passing">
+								<field name="passing_sukses"/>
+								<field name="passing_gagal"/>
+								<field name="assist"/>
+							</group>
+						</group>
+					</page>
+				</xpath>
+				<xpath expr="//field[@name='calendar_id']" position="replace">
+					<field name="club_id"/>
+					<field name="no_punggung" attrs="{'invisible': [('department_id', '=', 9)]}"/>
+				</xpath>
+				<xpath expr="//sheet" position="before">
+					<header>
+						<field name="status_pemain" widget="statusbar"/>
+					</header>
+				</xpath>
+
+			</field>
+		</record>
 	</data>
 </odoo>

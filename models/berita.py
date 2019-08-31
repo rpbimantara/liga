@@ -9,9 +9,9 @@ class PersebayaBerita(models.Model):
 
 	title = fields.Char(string="Title")
 	headline = fields.Char(string="Headline")
-	image = fields.Binary(string="Foto Berita")
-	content = fields.Text (string="Konten Berita")
-	kategori_brita_id = fields.Many2one('persebaya.berita.kategori',string="Kategori")
+	image = fields.Binary(string="Picture")
+	content = fields.Text (string="Content")
+	kategori_brita_id = fields.Many2one('persebaya.berita.kategori',string="Category")
 
 	@api.multi
 	def name_get(self):
@@ -26,5 +26,5 @@ class PersebayaBeritaKategori(models.Model):
 	_name = 'persebaya.berita.kategori'
 	_inherit = ['mail.thread', 'ir.needaction_mixin']
 
-	name = fields.Char(string="Nama Kategori")
-	description = fields.Text(string="Deskripsi")
+	name = fields.Char(string="Name")
+	description = fields.Text(string="Description")
