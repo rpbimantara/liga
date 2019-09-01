@@ -9,7 +9,7 @@
 			yang mempunyai string "Application"
 		-->
 		<record model="ir.module.category" id="access_right_category">
-			<field name="name">Persebaya Fans Access Right</field>
+			<field name="name">Persebaya Fans</field>
 			<field name="description">Akses user untuk modul Persebaya</field>
 		</record>
 

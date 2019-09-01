@@ -24,6 +24,12 @@
             <menuitem id="menu_kategori_news" parent="menu_data_news" name="News Category" sequence="2" action="action_master_beritakategori"/>
 
             <!-- <menuitem id="menu_hr_root" name="Employees" sequence="75"/> -->
-        <menuitem id="tes" parent="hr.menu_hr_root" name="Fans / Supporter" sequence="1" action="action_show_fans"/>
+        <menuitem 
+            id="tes" 
+            parent="hr.menu_hr_root" 
+            name="Fans / Supporter" 
+            sequence="1" 
+            action="action_show_fans" 
+            groups="hr.group_hr_manager"/>
     </data>
 </odoo>

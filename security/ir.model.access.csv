@@ -1,44 +1,56 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_berita_fans,persebaya berita fans,model_persebaya_berita,persebaya.group_fans,1,1,0,0
-access_berita_player,persebaya berita player,model_persebaya_berita,persebaya.group_employee,1,1,0,0
+access_berita_fans,persebaya berita fans,model_persebaya_berita,persebaya.group_fans,1,0,0,0
+access_berita_player,persebaya berita player,model_persebaya_berita,persebaya.group_employee,1,0,0,0
 access_berita_klub,persebaya berita klub,model_persebaya_berita,persebaya.group_club,1,1,1,1
 
-access_jadwal_fans,persebaya jadwal fans,model_persebaya_jadwal,persebaya.group_fans,1,1,0,0
-access_jadwal_player,persebaya jadwal player,model_persebaya_jadwal,persebaya.group_employee,1,1,0,0
+access_berita_kategori_fans,persebaya berita kategori fans,model_persebaya_berita_kategori,persebaya.group_fans,1,0,0,0
+access_berita_kategori_player,persebaya berita kategori player,model_persebaya_berita_kategori,persebaya.group_employee,1,0,0,0
+access_berita_kategori_klub,persebaya berita kategori klub,model_persebaya_berita_kategori,persebaya.group_club,1,1,1,1
+
+access_jadwal_fans,persebaya jadwal fans,model_persebaya_jadwal,persebaya.group_fans,1,0,0,0
+access_jadwal_player,persebaya jadwal player,model_persebaya_jadwal,persebaya.group_employee,1,0,0,0
 access_jadwal_klub,persebaya jadwal klub,model_persebaya_jadwal,persebaya.group_club,1,1,1,1
 
-access_moments_fans,persebaya moments fans,model_persebaya_moments,persebaya.group_fans,1,1,0,0
-access_moments_player,persebaya moments player,model_persebaya_moments,persebaya.group_employee,1,1,0,0
+access_moments_fans,persebaya moments fans,model_persebaya_moments,persebaya.group_fans,1,0,0,0
+access_moments_player,persebaya moments player,model_persebaya_moments,persebaya.group_employee,1,0,0,0
 access_moments_klub,persebaya moments klub,model_persebaya_moments,persebaya.group_club,1,1,1,1
 
-access_club_fans,persebaya club fans,model_persebaya_club,persebaya.group_fans,1,1,0,0
-access_club_player,persebaya club player,model_persebaya_club,persebaya.group_employee,1,1,0,0
+access_club_fans,persebaya club fans,model_persebaya_club,persebaya.group_fans,1,0,0,0
+access_club_player,persebaya club player,model_persebaya_club,persebaya.group_employee,1,0,0,0
 access_club_klub,persebaya club klub,model_persebaya_club,persebaya.group_club,1,1,1,1
 
-access_liga_fans,persebaya liga fans,model_persebaya_liga,persebaya.group_fans,1,1,0,0
-access_liga_player,persebaya liga player,model_persebaya_liga,persebaya.group_employee,1,1,0,0
+access_liga_fans,persebaya liga fans,model_persebaya_liga,persebaya.group_fans,1,0,0,0
+access_liga_player,persebaya liga player,model_persebaya_liga,persebaya.group_employee,1,0,0,0
 access_liga_klub,persebaya liga klub,model_persebaya_liga,persebaya.group_club,1,1,1,1
 
-access_stadion_fans,persebaya stadion fans,model_persebaya_stadion,persebaya.group_fans,1,1,0,0
-access_stadion_player,persebaya stadion player,model_persebaya_stadion,persebaya.group_employee,1,1,0,0
+access_stadion_fans,persebaya stadion fans,model_persebaya_stadion,persebaya.group_fans,1,0,0,0
+access_stadion_player,persebaya stadion player,model_persebaya_stadion,persebaya.group_employee,1,0,0,0
 access_stadion_klub,persebaya stadion klub,model_persebaya_stadion,persebaya.group_club,1,1,1,1
 
 access_lelang_fans,persebaya lelang fans,model_persebaya_lelang,persebaya.group_fans,1,1,1,1
 access_lelang_player,persebaya lelang player,model_persebaya_lelang,persebaya.group_employee,1,1,1,1
 access_lelang_klub,persebaya lelang klub,model_persebaya_lelang,persebaya.group_club,1,1,1,1
 
-access_merchandise_fans,persebaya merchandise fans,model_persebaya_merchandise,persebaya.group_fans,1,1,1,1
-access_merchandise_player,persebaya merchandise player,model_persebaya_merchandise,persebaya.group_employee,1,1,1,1
-access_merchandise_klub,persebaya merchandise klub,model_persebaya_merchandise,persebaya.group_club,1,1,1,1
-
-access_merchandise_line_fans,persebaya merchandise line fans,model_persebaya_merchandise_line,persebaya.group_fans,1,1,1,1
-access_merchandise_line_player,persebaya merchandise line player,model_persebaya_merchandise_line,persebaya.group_employee,1,1,1,1
-access_merchandise_line_klub,persebaya merchandise line klub,model_persebaya_merchandise_line,persebaya.group_club,1,1,1,1
-
-access_klasemen_fans,persebaya klasemen line fans,model_persebaya_liga_klasemen,persebaya.group_fans,1,1,0,0
-access_klasemen_player,persebaya klasemen line player,model_persebaya_liga_klasemen,persebaya.group_employee,1,1,0,0
-access_klasemen_klub,persebaya klasemen line klub,model_persebaya_liga_klasemen,persebaya.group_club,1,1,1,1
-
 access_lelang_bid_fans,persebaya lelang bid fans,model_persebaya_lelang_bid,persebaya.group_fans,1,1,1,1
 access_lelang_bid_player,persebaya lelang bid player,model_persebaya_lelang_bid,persebaya.group_employee,1,1,1,1
 access_lelang_bid_klub,persebaya lelang bid klub,model_persebaya_lelang_bid,persebaya.group_club,1,1,1,1
+
+access_klasemen_fans,persebaya klasemen fans,model_persebaya_liga_klasemen,persebaya.group_fans,1,0,0,0
+access_klasemen_player,persebaya klasemen player,model_persebaya_liga_klasemen,persebaya.group_employee,1,0,0,0
+access_klasemen_klub,persebaya klasemen klub,model_persebaya_liga_klasemen,persebaya.group_club,1,1,1,1
+
+access_line_home_fans,persebaya line home fans,model_persebaya_line_up_home,persebaya.group_fans,1,0,0,0
+access_line_home_player,persebaya line home player,model_persebaya_line_up_home,persebaya.group_employee,1,0,0,0
+access_line_home_klub,persebaya line home klub,model_persebaya_line_up_home,persebaya.group_club,1,1,1,1
+
+access_line_away_fans,persebaya line away fans,model_persebaya_line_up_away,persebaya.group_fans,1,0,0,0
+access_line_away_player,persebaya line away player,model_persebaya_line_up_away,persebaya.group_employee,1,0,0,0
+access_line_away_klub,persebaya line away klub,model_persebaya_line_up_away,persebaya.group_club,1,1,1,1
+
+access_moments_fans,persebaya moments fans,model_persebaya_moments,persebaya.group_fans,1,0,0,0
+access_moments_player,persebaya moments player,model_persebaya_moments,persebaya.group_employee,1,0,0,0
+access_moments_klub,persebaya moments klub,model_persebaya_moments,persebaya.group_club,1,1,1,1
+
+access_rating_fans,persebaya rating fans,model_persebaya_rating,persebaya.group_fans,1,1,1,0
+access_rating_player,persebaya rating player,model_persebaya_rating,persebaya.group_employee,1,0,0,0
+access_rating_klub,persebaya rating klub,model_persebaya_rating,persebaya.group_club,1,0,0,1
