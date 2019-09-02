@@ -6,15 +6,15 @@
 			<field name="inherit_id" ref="hr.view_employee_form"/>
 			<field name="arch" type="xml">
 				<xpath expr="//field[@name='job_id']" position="attributes">
-				    <attribute name = "domain">[('department_id','=',department_id)]</attribute>
+					<attribute name = "domain">[('department_id','=',department_id)]</attribute>
 				</xpath>
 
 				<xpath expr="//field[@name='parent_id']" position="attributes">
-				    <attribute name = "domain">[('department_id','=',10)]</attribute>
+					<attribute name = "domain">[('department_id','=',10)]</attribute>
 				</xpath>
 
 				<xpath expr="//field[@name='coach_id']" position="attributes">
-				    <attribute name = "domain">[('department_id','=',9)]</attribute>
+					<attribute name = "domain">[('department_id','=',9)]</attribute>
 				</xpath>
 				<xpath expr="//page[@name='personal_information']" position="after">
 					<page String="Performance Information">
@@ -44,6 +44,15 @@
 							</group>
 						</group>
 					</page>
+					<page String="Rating and Review">
+						<field name="rating_ids">
+							<tree editable="true" open="false" context="{'default_employee_id' : active_id}">
+								<field name="jadwal_id"/>
+								<field name="rating"/>
+								<field name="review"/>
+							</tree>
+						</field>
+					</page>
 				</xpath>
 				<xpath expr="//field[@name='calendar_id']" position="replace">
 					<field name="club_id"/>
@@ -53,6 +62,9 @@
 					<header>
 						<field name="status_pemain" widget="statusbar"/>
 					</header>
+				</xpath>
+				<xpath expr="//field[@name='category_ids']" position="replace">
+					<field name="rating" widget="priority"/>
 				</xpath>
 
 			</field>

@@ -27,6 +27,14 @@ class HrEmployeeInherit(models.Model):
 		('belum', 'Not Ready'),
 	], string="Status Pemain", default='belum')
 	no_punggung = fields.Integer(string="Player Number")
+	rating = fields.Selection([
+		('0', 'No rating'),
+		('1', '1 Star'),
+		('2', '2 Star'),
+		('3', '3 Star'),
+		('4', '4 Star'),
+		('5', '5 Star'),
+	], string='Rating',default=1)
 
 
 	

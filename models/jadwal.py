@@ -12,7 +12,7 @@ class PersebayaJadwal(models.Model):
 	liga_id = fields.Many2one('persebaya.liga',string="League",readonly=False)
 	tgl_main = fields.Datetime(string="Date")
 	durasi = fields.Integer(string="Durasi Main")
-	stadion_id = fields.Many2one('persebaya.stadion',string="Venue")
+	stadion_id = fields.Many2one(related='home.stadion',string="Venue")
 	home = fields.Many2one('persebaya.club', string="Team Home")
 	away = fields.Many2one('persebaya.club', string="Team Away")
 	wasit = fields.Char(string="Referee")
@@ -23,13 +23,17 @@ class PersebayaJadwal(models.Model):
 	match_comm = fields.Char(string="Match Commisioner")
 	general_coor = fields.Char(string="General Coordinator")
 	media_ofc = fields.Char(string="Media Officer")
-	hasil = fields.Char(string="Hasil")
+	hasil = fields.Selection([
+		('home', 'Home Win'),
+		('draw', 'Draw'),
+		('away', 'Away Win')
+	], string="Result")
 	status_jadwal = fields.Selection([
-		('akan', 'Akan Datang'),
-		('tunda', 'Tunda'),
 		('valid', 'Valid'),
-		('main', 'Main'),
-		('selesai', 'Selesai'),
+		('akan', 'Incoming'),
+		('tunda', 'Postponed'),
+		('main', 'Play'),
+		('selesai', 'Done'),
 	], string="Status Jadwal", default='akan')
 	pelatih_home = fields.Many2one(related='home.pelatih',string="Coach Home",readonly=True)
 	formasi_home = fields.Char(string="Formation Team")
@@ -89,6 +93,16 @@ class PersebayaJadwal(models.Model):
 	@api.multi
 	def action_valid(self):
 		self.write({'status_jadwal': 'valid'})
+
+	@api.multi
+	def action_done(self):
+		if self.ht_home > self.ht_away:
+			self.write({'hasil': 'home'})
+		elif self.ht_home < self.ht_away:
+			self.write({'hasil': 'away'})
+		else:
+			self.write({'hasil': 'draw'})
+		self.write({'status_jadwal': 'selesai'})
 		
 	def open_list_moment(self):
 		action = self.env.ref('persebaya.action_show_list_moment')
@@ -276,11 +290,6 @@ class PersebayaJadwal(models.Model):
 		self.sudut_away = len(self.env['persebaya.moments'].search([('jadwal_id','=',self.id),('club_id','=',self.away.id),('moments','=','Corner')]))
 		self.offside_away = len(self.env['persebaya.moments'].search([('jadwal_id','=',self.id),('club_id','=',self.away.id),('moments','=','Offsides')]))
 		self.penyelamatan_away = len(self.env['persebaya.moments'].search([('jadwal_id','=',self.id),('club_id','=',self.away.id),('moments','=','Saves')]))
-
-
-
-
-
 
 class PersebayaMoments(models.Model):
 	_name = 'persebaya.moments'

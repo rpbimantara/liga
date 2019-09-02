@@ -7,14 +7,15 @@
 		</template>
 
 		<record model="ir.ui.view" id="view_form_master_jadwal">
-			<field name="name">Master Jadwal</field>
+			<field name="name">Scheduler</field>
 			<field name="model">persebaya.jadwal</field>
 			<field name="arch" type="xml">
-				<form string="Master Jadwal">
+				<form string="Scheduler">
 					<header>
-						<button name="action_tunda" type="object" string="Tunda" class="oe_read_only" attrs="{'invisible':[('status_jadwal', '=', 'tunda')]}"/>
+						<button name="action_tunda" type="object" string="Postponed" class="oe_read_only" attrs="{'invisible':[('status_jadwal', '=', 'tunda')]}"/>
 						<button name="action_valid" type="object" string="Validate" class="oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'tunda')]}"/>
 						<button name="action_match" type="object" string="Start Match" class="oe_highlight oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'valid')]}"/>
+						<button name="action_done" type="object" string="End Match" class="oe_highlight oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'main')]}"/>
 						<field name="status_jadwal" widget="statusbar"/>
 					</header>
 					<sheet>
@@ -33,6 +34,7 @@
 								<field name="liga_id"/>
 								<field name="tgl_main"/>
 								<field name="stadion_id"/>
+								<field name="hasil"/>
 							</group>
 							<group string="MATCH DEVICE">
 								<field name="wasit"/>
@@ -158,7 +160,7 @@
 		</record>
 
 		<record model="ir.ui.view" id="view_tree_master_jadwal">
-			<field name="name">Master Jadwal</field>
+			<field name="name">Scheduler</field>
 			<field name="model">persebaya.jadwal</field>
 			<field name="arch" type="xml">
 				<tree>
@@ -190,7 +192,7 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="action_master_jadwal">
-			<field name="name">Master Jadwal</field>
+			<field name="name">Scheduler</field>
 			<field name="res_model">persebaya.jadwal</field>
 			<field name="view_id" ref="view_tree_master_jadwal"/>
 			<field name="view_type">form</field>
@@ -201,7 +203,7 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="action_jadwal_team">
-			<field name="name">Master Jadwal team</field>
+			<field name="name">Team Scheduler</field>
 			<field name="res_model">persebaya.jadwal</field>
 			<field name="view_id" ref="view_tree_master_jadwal"/>
 			<field name="view_type">form</field>

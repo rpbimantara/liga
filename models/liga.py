@@ -60,16 +60,18 @@ class PersebayaLiga(models.Model):
 class PersebayaLigaKlasemen(models.Model):
 	_name = 'persebaya.liga.klasemen'
 	_inherit = ['mail.thread', 'ir.needaction_mixin']
+	_order = "point desc"
 
-	liga_id = fields.Many2one('persebaya.liga',string="Liga")
-	club_id = fields.Many2one('persebaya.club',string="Nama Club")
-	play = fields.Integer(string="Main",default=0,readonly=True)
-	win = fields.Integer(string="Menang",default=0,readonly=True)
-	draw = fields.Integer(string="Seri",default=0,readonly=True)
-	lose = fields.Integer(string="Kalah",default=0,readonly=True)
-	gm = fields.Integer(string="Gol Masuk",default=0,readonly=True)
-	gk = fields.Integer(string="Gol Kemasukan",default=0,readonly=True)
-	point = fields.Integer(string="Point",default=0,readonly=True)
+	liga_id = fields.Many2one('persebaya.liga',string="League")
+	club_id = fields.Many2one('persebaya.club',string="Team")
+	play = fields.Integer(string="Play",default=0,compute='_compute_klasemen')
+	win = fields.Integer(string="Win",default=0,compute='_compute_klasemen')
+	draw = fields.Integer(string="Draw",default=0,compute='_compute_klasemen')
+	lose = fields.Integer(string="Lose",default=0,compute='_compute_klasemen')
+	gm = fields.Integer(string="GF",default=0,compute='_compute_klasemen')
+	gk = fields.Integer(string="GA",default=0,compute='_compute_klasemen')
+	gd = fields.Integer(string="GD",default=0,compute='_compute_klasemen')
+	point = fields.Integer(string="Point",default=0,compute='_compute_klasemen')
 
 	@api.multi
 	def name_get(self):
@@ -79,12 +81,42 @@ class PersebayaLigaKlasemen(models.Model):
 			res.append((s.id, nama))
 
 		return res
+	
+	@api.one
+	def _compute_klasemen(self):
+		jadwal_ids = self.env['persebaya.jadwal'].search([('liga_id','=',self.liga_id.id),('status_jadwal','=','selesai')])
+		gm = 0
+		gk = 0
+		win = 0
+		draw = 0
+		lose = 0
+		for jadwal in jadwal_ids:
+			if jadwal.home.id == self.club_id.id or jadwal.away.id == self.club_id.id:
+				self.play += 1
+				if jadwal.hasil == 'draw':
+					draw += 1
+				elif jadwal.hasil == 'home' and jadwal.home.id == self.club_id.id:
+					win += 1
+					gm += int(jadwal.ft_home)
+				elif jadwal.hasil == 'away' and jadwal.away.id == self.club_id.id:
+					win += 1
+					gm += int(jadwal.ft_away)
+				else:
+					lose += 1
+					gk += int(jadwal.ft_home)
+		self.gk = gk
+		self.gm = gm
+		self.gd = gm - gk
+		self.win = win
+		self.draw = draw
+		self.lose = lose
+		self.point = (win * 3) + (draw * 1)
+
 
 	@api.model
 	def klasemen(self,id_liga):
 		vals = []
 		klasemen_ids = self.env['persebaya.liga.klasemen'].search([('liga_id','=',id_liga)])
-		# print klasemen_ids
 		for klasemen in klasemen_ids:
 			data = {
 					'id' : klasemen.id,
