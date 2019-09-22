@@ -116,10 +116,10 @@ class PersebayaLigaKlasemen(models.Model):
 	@api.model
 	def klasemen(self,id_liga):
 		vals = []
-		klasemen_ids = self.env['persebaya.liga.klasemen'].search([('liga_id','=',id_liga)])
+		klasemen_ids = self.env['persebaya.liga.klasemen'].search([('liga_id','=',id_liga)],order="point desc")
 		for klasemen in klasemen_ids:
 			data = {
-					'id' : klasemen.id,
+					'id' : klasemen.club_id.id,
 					'foto_club' : klasemen.club_id.foto_club,
 					'nama_club' : klasemen.club_id.nama,
 					'play' : klasemen.play,

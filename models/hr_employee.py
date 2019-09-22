@@ -34,8 +34,9 @@ class HrEmployeeInherit(models.Model):
 		('3', '3 Star'),
 		('4', '4 Star'),
 		('5', '5 Star'),
-	], string='Rating',default=1)
+	], string='Rating',readonly=True,compute='_compute_rating')
 
 
-	
-
+	def _compute_rating(self):
+		for s in self:
+			print(s.rating_ids.rating)

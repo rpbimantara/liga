@@ -12,9 +12,9 @@ class LelangPersebaya(models.Model):
 	active = fields.Boolean(default=True, help="Uncheck if your item is second item.")
 	foto_lelang = fields.Binary(string="Picture",required=True)
 	deskripsi_barang = fields.Text(string="Description")
-	ob = fields.Integer(string="Open Bid",required=True)
-	inc = fields.Integer(string="Increment",required=True,readonly=False)
-	binow = fields.Integer(string="BIN",required=True)
+	ob = fields.Integer(string="Open Bid")
+	inc = fields.Integer(string="Increment")
+	binow = fields.Integer(string="BIN")
 	due_date = fields.Datetime(string="End Date")
 	pemenang = fields.Many2one('res.users',string="Winner",readonly=True)
 	bid_ids = fields.One2many('persebaya.lelang.bid','lelang_id',string="Lelang History")
@@ -72,6 +72,7 @@ class BidLelangPersebaya(models.Model):
 	_inherit = ['mail.thread', 'ir.needaction_mixin']
 
 	lelang_id = fields.Many2one('persebaya.lelang',string="Lelang")
+	product_id = fields.Many2one('product.template',string="Product")
 	user_bid = fields.Many2one('res.users',string="Participant")
 	nilai = fields.Integer(string="Nominal",required=True)
 	keterang = fields.Char(string="Note")
@@ -86,3 +87,39 @@ class BidLelangPersebaya(models.Model):
 	# 		res.append((s.id,user + ' - ' + ket + ' - ' + nilai))
 
 	# 	return res
+
+	@api.model
+	def create(self,vals):
+		res = super(BidLelangPersebaya,self).create(vals)
+		if res.keterang ==  'BID':
+			res.product_id.write({
+				'ob'		 : res.product_id.ob + res.product_id.inc,
+				'list_price' : res['nilai'],
+			})
+
+		if res.keterang ==  'BIN' or res.nilai >= res.product_id.binow:
+			res.product_id.write({
+				'list_price' : res['nilai'],
+				'status_lelang'  : 'selesai',
+				'pemenang'		 : res.user_bid.id
+			})
+			# order_id = res.env['sale.order'].search([('partner_id','=',res.user_bid.partner_id.id),('state','=','draft')])
+			# if order_id:
+			# 	res.env['sale.order.line'].create({
+			# 		'product_id' : res.product_id.product_variant_id.id,
+			# 		'order_id'	: order_id.id
+			# 	})
+			# else:
+			sale_id = res.env['sale.order'].create({
+				'partner_id' : res.user_bid.partner_id.id,
+				'user_id' : res.product_id.create_uid.id,
+				'payment_term_id' : 1
+			})
+			if sale_id:
+				res.env['sale.order.line'].create({
+					'product_id' : res.product_id.product_variant_id.id,
+					'order_id'	: sale_id.id
+				})
+				sale_id.action_confirm()
+				sale_id.action_invoice_create()
+		return res

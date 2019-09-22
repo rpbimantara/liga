@@ -134,7 +134,7 @@ class PersebayaJadwal(models.Model):
 				'ft_home_last' : jadwal_ids[0].ft_home,
 				'ft_away_last' : jadwal_ids[0].ft_away,
 				'stadion_last' : jadwal_ids[0].stadion_id.nama,
-				'date_last' : str(datetime.strptime(jadwal_ids[0].tgl_main, '%Y-%m-%d %H:%M:%S') + timedelta(hours=7)),
+				'date_last' : str(datetime.strptime(jadwal_ids[0].tgl_main, '%Y-%m-%d %H:%M:%S')),
 				'liga_last' : jadwal_ids[0].liga_id.nama,
 				'id' : nexts[0].id,
 				'image_home' :nexts[0].home.foto_club,
@@ -145,18 +145,18 @@ class PersebayaJadwal(models.Model):
 				'ft_away' : nexts[0].ft_away,
 				'skornow' : skornow,
 				'stadion' : nexts[0].stadion_id.nama,
-				'date' : str(datetime.strptime(nexts[0].tgl_main, '%Y-%m-%d %H:%M:%S') + timedelta(hours=7)),
+				'date' : str(datetime.strptime(nexts[0].tgl_main, '%Y-%m-%d %H:%M:%S')),
 				'liga' : nexts[0].liga_id.nama,
-				'id_next' : nexts[1].id,
-				'image_home_next' :nexts[1].home.foto_club,
-				'image_away_next' : nexts[1].away.foto_club,
-				'home_next' : nexts[1].home.nama,
-				'away_next' : nexts[1].away.nama,
-				'ft_home_next' : nexts[1].ft_home,
-				'ft_away_next' : nexts[1].ft_away,
-				'stadion_next' : nexts[1].stadion_id.nama,
-				'date_next' : str(datetime.strptime(nexts[1].tgl_main, '%Y-%m-%d %H:%M:%S') + timedelta(hours=7)),
-				'liga_next' : nexts[1].liga_id.nama
+				# 'id_next' : nexts[1].id,
+				# 'image_home_next' :nexts[1].home.foto_club,
+				# 'image_away_next' : nexts[1].away.foto_club,
+				# 'home_next' : nexts[1].home.nama,
+				# 'away_next' : nexts[1].away.nama,
+				# 'ft_home_next' : nexts[1].ft_home,
+				# 'ft_away_next' : nexts[1].ft_away,
+				# 'stadion_next' : nexts[1].stadion_id.nama,
+				# 'date_next' : str(datetime.strptime(nexts[1].tgl_main, '%Y-%m-%d %H:%M:%S') + timedelta(hours=7)),
+				# 'liga_next' : nexts[1].liga_id.nama
 			}
 		vals.append(data)
 		return vals
@@ -193,17 +193,15 @@ class PersebayaJadwal(models.Model):
 
 	@api.model
 	def list_jadwal_club(self,club_id,liga_id,status):
-		club_id = 42
-		liga_id = 11
-		status = ['selesai']
 		vals = []
-		jadwal_ids = self.env['persebaya.jadwal'].search(['|',('away','=',club_id),('home','=',club_id),('status_jadwal','in',[str(item) for item in status]),('liga_id','=',liga_id)])
+		status = [item.encode('utf-8') for item in status]
+		jadwal_ids = self.env['persebaya.jadwal'].search(['|',('away','=',int(club_id)),('home','=',int(club_id)),('status_jadwal','in',status),('liga_id','=',liga_id)])
 		for jadwal in jadwal_ids:
 			date = datetime.strptime(jadwal.tgl_main, '%Y-%m-%d %H:%M:%S') + timedelta(hours=7)
 			foto_club = ''
 			nama_club = ''
 			is_home = False
-			if jadwal.away.id == club_id:
+			if jadwal.away.id == int(club_id):
 				foto_club = jadwal.home.foto_club
 				nama_club = jadwal.home.nama
 				is_home = False
@@ -252,12 +250,24 @@ class PersebayaJadwal(models.Model):
 		return vals
 
 	def detail(self):
-		users = self.env['res.users'].search([('active','=',True),('fcm_reg_ids','!=',False)])
-		fcm_regids = [i.fcm_reg_ids.encode('ascii','ignore') for i in users]
-		message_title = "Persebaya Fans"
-		message_body  = "Today is Persebaya Day : " + self.home.nama + " VS " + self.away.nama
-		data = {'model':'persebaya.jadwal', 'id': self.id}
-		self.push_pyfcm_multi(fcm_regids, message_title, message_body, data)
+		# users = self.env['res.users'].search([('active','=',True),('fcm_reg_ids','!=',False)])
+		self.env['mail.message'].create({'message_type':"notification",
+                "subtype": self.env.ref("mail.mt_comment").id, # subject type
+                'body': "Today is Persebaya Day : " + self.home.nama + " VS " + self.away.nama,
+                'subject': "Persebaya Fans",
+				'partner_ids' : [(4, 68)],
+                'needaction_partner_ids': [(4, 68)],   # partner to whom you send notification
+                'model': self._name,
+                'res_id': self.id,
+                })
+
+        # 'needaction_partner_ids': [(4, i.partner_id.id) for i in users],   # partner to whom you send notification
+		# users = self.env['res.users'].search([('active','=',True),('fcm_reg_ids','!=',False)])
+		# fcm_regids = [i.fcm_reg_ids.encode('ascii','ignore') for i in users]
+		# message_title = "Persebaya Fans"
+		# message_body  = "Today is Persebaya Day : " + self.home.nama + " VS " + self.away.nama
+		# data = {'model':'persebaya.jadwal', 'id': self.id}
+		# self.push_pyfcm_multi(fcm_regids, message_title, message_body, data)
 
 
 	def push_pyfcm_multi(self, to_regids, message_title, message_body, data=False):
@@ -265,6 +275,7 @@ class PersebayaJadwal(models.Model):
 		result = push_service.notify_multiple_devices(registration_ids=to_regids, 
 		message_title=message_title,
 		message_body=message_body)
+		print(result)
 
 	@api.one
 	@api.depends('moments_ids')

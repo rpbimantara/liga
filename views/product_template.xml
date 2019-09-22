@@ -1,14 +1,44 @@
 <odoo>
-	<data>
-		<record id="product_template_only_form_view_inherit" model="ir.ui.view">
+    <data>
+        <record id="product_template_only_form_view_inherit" model="ir.ui.view">
             <field name="name">product.template.inherit</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_only_form_view"/>
             <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <field name="status_lelang" widget="statusbar" attrs="{'invisible': [('type', 'not in', ['lelang'])]}"/>
+                    </header>
+                </xpath>
+                <xpath expr="//field[@name='barcode']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//field[@name='categ_id']" position="after">
                     <field name="create_uid"/>
+                    <field name="pemenang" attrs="{'invisible': [('type', 'not in', ['lelang'])]}"/>
+                </xpath>
+                <xpath expr="//field[@name='purchase_method']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('type', 'in', ['lelang'])]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='purchase_method']" position="after">
+                    <field name="ob" attrs="{'invisible': [('type', 'not in', ['lelang'])],'required': [('type', 'in', ['lelang'])]}"/>
+                    <field name="inc" attrs="{'invisible': [('type', 'not in', ['lelang'])],'required': [('type', 'in', ['lelang'])]}"/>
+                    <field name="binow" attrs="{'invisible': [('type', 'not in', ['lelang'])],'required': [('type', 'in', ['lelang'])]}"/>
+                    <field name="due_date" attrs="{'invisible': [('type', 'not in', ['lelang'])],'required': [('type', 'in', ['lelang'])]}"/>
+                </xpath>
+                <xpath expr="//sheet/notebook/page[@name='notes']" position="after">
+                    <page string="Lelang History" attrs="{'invisible': [('type', 'not in', ['lelang'])]}">
+                        <field name="bid_ids">
+                            <tree create="false" edit="false">
+                                <field name="user_bid"/>
+                                <field name="nilai"/>
+                                <field name="keterang"/>
+                                <field name="create_date"/>
+                            </tree>
+                        </field>
+                    </page>
                 </xpath>
             </field>
         </record>
-	</data>
+    </data>
 </odoo>

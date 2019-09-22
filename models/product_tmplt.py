@@ -4,6 +4,22 @@ class ProductTemplateInherits(models.Model):
 	_inherit = "product.template"
 
 	variant_text = fields.Text(String="Variant")
+	type = fields.Selection(selection_add=[('lelang', 'Auction'),('donasi', 'Donation')])
+	ob = fields.Integer(string="Open Bid",required=True)
+	inc = fields.Integer(string="Increment",required=True,readonly=False)
+	binow = fields.Integer(string="BIN",required=True)
+	due_date = fields.Datetime(string="End Date")
+	pemenang = fields.Many2one('res.users',string="Winner",readonly=True)
+	bid_ids = fields.One2many('persebaya.lelang.bid','product_id',string="Auction History")
+	status_lelang = fields.Selection([
+		('jalan', 'On Progress'),
+		('selesai', 'End'),
+	], string="State", default='jalan', readonly=True)
+
+	# @api.onchange('status_lelang')
+	# def _onchange_status_lelang(self):
+	# 	if self.status_lelang == 'selesai' and self.pemenang:
+			
 
 
 class ProductProductInherits(models.Model):
@@ -18,8 +34,8 @@ class ProductProductInherits(models.Model):
 			text_string = ""
 			# if len(s.attribute_value_ids) > 0 :
 			for a in s.attribute_value_ids:
-				text_string += a.name +", "
-			text_string = text_string.rstrip(', ')
+				text_string += a.name +"\n "
+			# text_string = text_string.rstrip(', ')
 			s.variant_text = text_string
 		
 	@api.model
@@ -33,17 +49,20 @@ class ProductProductInherits(models.Model):
 			variant_text = variant_text.rstrip(', ')
 			data = {
 				'id' : product.id,
+				'name': product.name,
 				'image' : product.image_medium,
 				'variant' : variant_text,
 				'qty_available' : product.qty_available,
-				'desc' : product.description_sale
+				'desc' : product.description_sale,
+				'owner' : product.create_uid.id,
+				'ownername' : product.create_uid.name,
+				'date' : product.create_date
 			}
 			vals.append(data)
 		return vals
 
 class SaleOrderInherits(models.Model):
 	_inherit = "sale.order.line"
-
 
 	@api.model
 	def get_checkout_list(self,partner_id):
@@ -54,10 +73,27 @@ class SaleOrderInherits(models.Model):
 			data = {
 				'id'	: order.id,
 				'nama'	: order.product_id.name,
+				'type'	: order.product_id.type,
 				'harga'	: order.price_unit,
 				'qty'	: order.product_uom_qty,
 				'image'	: order.product_id.image_medium,
 				'stock' : order.product_id.qty_available
 			}
 			vals.append(data)
+		print(vals)
 		return vals
+
+# class SaleOrderParentInherits(models.Model):
+# 	_inherit = "sale.order"
+
+
+# 	@api.model
+# 	def create(self,vals):
+# 		res = super(SaleOrderParentInherits,self).create(vals)
+# 		print(">>>>>>>>>> ON CREATE <<<<<<<<<<<<<<<<<<")
+# 		print(res)
+# 		if res.payment_term_id.id  == 1:
+# 			print(">>>>>>>>>> ON CREATE <<<<<<<<<<<<<<<<<<")
+# 			res.action_confirm()
+# 			res.action_invoice_create()
+# 		return res

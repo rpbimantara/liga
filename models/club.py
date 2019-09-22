@@ -63,8 +63,7 @@ class PersebayaClub(models.Model):
 
 	@api.model
 	def get_summary(self,club_id):
-		club_ids = self.env['persebaya.club'].search([('id','=',42)])
-		print(club_ids)
+		club_ids = self.env['persebaya.club'].search([('id','=',club_id)])
 		vals = []
 		for club in club_ids:
 			data = {
