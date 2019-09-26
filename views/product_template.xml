@@ -8,6 +8,7 @@
                 <xpath expr="//sheet" position="before">
                     <header>
                         <field name="status_lelang" widget="statusbar" attrs="{'invisible': [('type', 'not in', ['lelang'])]}"/>
+                        <field name="status_donasi" widget="statusbar" attrs="{'invisible': [('type', 'not in', ['donasi'])]}"/>
                     </header>
                 </xpath>
                 <xpath expr="//field[@name='barcode']" position="attributes">
@@ -24,11 +25,22 @@
                     <field name="ob" attrs="{'invisible': [('type', 'not in', ['lelang'])],'required': [('type', 'in', ['lelang'])]}"/>
                     <field name="inc" attrs="{'invisible': [('type', 'not in', ['lelang'])],'required': [('type', 'in', ['lelang'])]}"/>
                     <field name="binow" attrs="{'invisible': [('type', 'not in', ['lelang'])],'required': [('type', 'in', ['lelang'])]}"/>
-                    <field name="due_date" attrs="{'invisible': [('type', 'not in', ['lelang'])],'required': [('type', 'in', ['lelang'])]}"/>
+                    <field name="due_date" attrs="{'invisible': [('type', 'not in', ['lelang','donasi'])],'required': [('type', 'in', ['lelang','donasi'])]}"/>
+                    <field name="target_donasi" attrs="{'invisible': [('type', 'not in', ['donasi'])],'required': [('type', 'in', ['donasi'])]}"/>
                 </xpath>
                 <xpath expr="//sheet/notebook/page[@name='notes']" position="after">
-                    <page string="Lelang History" attrs="{'invisible': [('type', 'not in', ['lelang'])]}">
+                    <page string="Auction History" attrs="{'invisible': [('type', 'not in', ['lelang'])]}">
                         <field name="bid_ids">
+                            <tree create="false" edit="false">
+                                <field name="user_bid"/>
+                                <field name="nilai"/>
+                                <field name="keterang"/>
+                                <field name="create_date"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Donation History" attrs="{'invisible': [('type', 'not in', ['donasi'])]}">
+                        <field name="donasi_ids">
                             <tree create="false" edit="false">
                                 <field name="user_bid"/>
                                 <field name="nilai"/>

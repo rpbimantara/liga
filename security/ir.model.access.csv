@@ -54,3 +54,7 @@ access_moments_klub,persebaya moments klub,model_persebaya_moments,persebaya.gro
 access_rating_fans,persebaya rating fans,model_persebaya_rating,persebaya.group_fans,1,1,1,0
 access_rating_player,persebaya rating player,model_persebaya_rating,persebaya.group_employee,1,0,0,0
 access_rating_klub,persebaya rating klub,model_persebaya_rating,persebaya.group_club,1,0,0,1
+
+access_donasi_fans,persebaya donasi fans,model_persebaya_donasi,persebaya.group_fans,1,0,1,0
+access_donasi_player,persebaya donasi player,model_persebaya_donasi,persebaya.group_employee,1,0,1,0
+access_donasi_klub,persebaya donasi klub,model_persebaya_donasi,persebaya.group_club,1,1,1,1

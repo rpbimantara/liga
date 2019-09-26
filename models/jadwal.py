@@ -251,23 +251,23 @@ class PersebayaJadwal(models.Model):
 
 	def detail(self):
 		# users = self.env['res.users'].search([('active','=',True),('fcm_reg_ids','!=',False)])
-		self.env['mail.message'].create({'message_type':"notification",
-                "subtype": self.env.ref("mail.mt_comment").id, # subject type
-                'body': "Today is Persebaya Day : " + self.home.nama + " VS " + self.away.nama,
-                'subject': "Persebaya Fans",
-				'partner_ids' : [(4, 68)],
-                'needaction_partner_ids': [(4, 68)],   # partner to whom you send notification
-                'model': self._name,
-                'res_id': self.id,
-                })
+		# self.env['mail.message'].create({'message_type':"notification",
+        #         "subtype": self.env.ref("mail.mt_comment").id, # subject type
+        #         'body': "Today is Persebaya Day : " + self.home.nama + " VS " + self.away.nama,
+        #         'subject': "Persebaya Fans",
+		# 		'partner_ids' : [(4, 68)],
+        #         'needaction_partner_ids': [(4, 68)],   # partner to whom you send notification
+        #         'model': self._name,
+        #         'res_id': self.id,
+        #         })
 
         # 'needaction_partner_ids': [(4, i.partner_id.id) for i in users],   # partner to whom you send notification
-		# users = self.env['res.users'].search([('active','=',True),('fcm_reg_ids','!=',False)])
-		# fcm_regids = [i.fcm_reg_ids.encode('ascii','ignore') for i in users]
-		# message_title = "Persebaya Fans"
-		# message_body  = "Today is Persebaya Day : " + self.home.nama + " VS " + self.away.nama
-		# data = {'model':'persebaya.jadwal', 'id': self.id}
-		# self.push_pyfcm_multi(fcm_regids, message_title, message_body, data)
+		users = self.env['res.users'].search([('active','=',True),('fcm_reg_ids','!=',False)])
+		fcm_regids = [i.fcm_reg_ids.encode('ascii','ignore') for i in users]
+		message_title = "Persebaya Fans"
+		message_body  = "Today is Persebaya Day : " + self.home.nama + " VS " + self.away.nama
+		data = {'model':'persebaya.jadwal', 'id': self.id}
+		self.push_pyfcm_multi(fcm_regids, message_title, message_body, data)
 
 
 	def push_pyfcm_multi(self, to_regids, message_title, message_body, data=False):

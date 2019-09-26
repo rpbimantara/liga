@@ -5,16 +5,23 @@ class ProductTemplateInherits(models.Model):
 
 	variant_text = fields.Text(String="Variant")
 	type = fields.Selection(selection_add=[('lelang', 'Auction'),('donasi', 'Donation')])
-	ob = fields.Integer(string="Open Bid",required=True)
-	inc = fields.Integer(string="Increment",required=True,readonly=False)
-	binow = fields.Integer(string="BIN",required=True)
+	ob = fields.Integer(string="Open Bid")
+	inc = fields.Integer(string="Increment")
+	binow = fields.Integer(string="BIN")
 	due_date = fields.Datetime(string="End Date")
 	pemenang = fields.Many2one('res.users',string="Winner",readonly=True)
 	bid_ids = fields.One2many('persebaya.lelang.bid','product_id',string="Auction History")
+	donasi_ids = fields.One2many('persebaya.donasi','product_id',string="Donation History")
+	target_donasi = fields.Integer(string="Target")
 	status_lelang = fields.Selection([
 		('jalan', 'On Progress'),
 		('selesai', 'End'),
 	], string="State", default='jalan', readonly=True)
+	status_donasi = fields.Selection([
+		('draft', 'Draft'),
+		('jalan', 'On Progress'),
+		('selesai', 'End'),
+	], string="State", default='draft', readonly=True)
 
 	# @api.onchange('status_lelang')
 	# def _onchange_status_lelang(self):
@@ -83,17 +90,12 @@ class SaleOrderInherits(models.Model):
 		print(vals)
 		return vals
 
-# class SaleOrderParentInherits(models.Model):
-# 	_inherit = "sale.order"
 
+class DonasiPersebaya(models.Model):
+	_name = 'persebaya.donasi'
+	_inherit = ['mail.thread', 'ir.needaction_mixin']
 
-# 	@api.model
-# 	def create(self,vals):
-# 		res = super(SaleOrderParentInherits,self).create(vals)
-# 		print(">>>>>>>>>> ON CREATE <<<<<<<<<<<<<<<<<<")
-# 		print(res)
-# 		if res.payment_term_id.id  == 1:
-# 			print(">>>>>>>>>> ON CREATE <<<<<<<<<<<<<<<<<<")
-# 			res.action_confirm()
-# 			res.action_invoice_create()
-# 		return res
+	product_id = fields.Many2one('product.template',string="Product")
+	user_bid = fields.Many2one('res.users',string="Participant")
+	nilai = fields.Integer(string="Nominal",required=True)
+	keterang = fields.Char(string="Note")
