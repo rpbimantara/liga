@@ -14,10 +14,13 @@ class ProductTemplateInherits(models.Model):
 	donasi_ids = fields.One2many('persebaya.donasi','product_id',string="Donation History")
 	target_donasi = fields.Integer(string="Target")
 	status_lelang = fields.Selection([
+		('tolak', 'Refuse'),
+		('draft', 'Draft'),
 		('jalan', 'On Progress'),
 		('selesai', 'End'),
-	], string="State", default='jalan', readonly=True)
+	], string="State", default='draft', readonly=True)
 	status_donasi = fields.Selection([
+		('tolak', 'Refuse'),
 		('draft', 'Draft'),
 		('jalan', 'On Progress'),
 		('selesai', 'End'),
@@ -26,6 +29,20 @@ class ProductTemplateInherits(models.Model):
 	# @api.onchange('status_lelang')
 	# def _onchange_status_lelang(self):
 	# 	if self.status_lelang == 'selesai' and self.pemenang:
+
+	def action_valid_donasi(self):
+		self.status_donasi = 'jalan'
+
+
+	def action_end_donasi(self):
+		self.status_donasi = 'selesai'
+			
+	def action_valid_lelang(self):
+		self.status_donasi = 'jalan'
+
+
+	def action_end_lelang(self):
+		self.status_donasi = 'selesai'
 			
 
 
