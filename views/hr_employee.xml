@@ -81,5 +81,65 @@
 
 			</field>
 		</record>
+
+		<record id="view_rating_search" model="ir.ui.view">
+			<field name="name">Rating and Review</field>
+			<field name="model">persebaya.rating</field>
+            <field name="arch" type="xml">
+                <search string="Rating and Review">
+					<field name="jadwal_id"/>
+					<field name="employee_id"/>
+					<field name="rating"/>
+					<field name="review"/>
+                </search>
+            </field>
+        </record>
+
+		<record model="ir.ui.view" id="view_form_rating">
+			<field name="name">Rating and Review</field>
+			<field name="model">persebaya.rating</field>
+			<field name="arch" type="xml">
+				<form string="Rating and Review">
+					<header>
+						<button name="action_remove_review" type="object" string="Remove Review" class="oe_highlight"/>
+					</header>
+					<sheet>
+						<group>
+							<field name="jadwal_id"/>
+							<field name="employee_id"/>
+							<field name="rating"/>
+							<field name="review"/>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_tree_rating">
+			<field name="name">Rating and Review</field>
+			<field name="model">persebaya.rating</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="employee_id"/>
+					<field name="jadwal_id"/>
+					<field name="rating"/>
+					<field name="review"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="rating_review_action" model="ir.actions.act_window">
+            <field name="name">Rating and Review</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">persebaya.rating</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="search_view_id" ref="view_rating_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Rating
+                </p>
+            </field>
+        </record>
 	</data>
 </odoo>

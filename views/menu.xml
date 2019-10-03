@@ -5,9 +5,11 @@
             <menuitem id="menu_master_merchandise" parent="menu_data_merchandise" name="Master Merchandise" sequence="1" action="action_master_merchandise"/>
             <menuitem id="menu_update_harga" parent="menu_data_merchandise" name="Update Harga" action="action_view_update_harga" sequence="2"/>
             <menuitem id="menu_update_stock" parent="menu_data_merchandise" name="Update Stock" action="action_view_update_stock" sequence="3"/> -->
-        <menuitem id="menu_data_lelang" parent="sales_team.menu_base_partner" name="Auction" sequence="3"/>
-            <menuitem id="menu_master_lelang" parent="menu_data_lelang" name="Auction List" sequence="1" action="action_master_lelang"/>
-            <menuitem id="menu_top_up" parent="menu_data_lelang" name="Top Up" action="action_view_top_up" sequence="2"/><!-- 
+        <menuitem id="menu_data_validasi" parent="sales_team.menu_base_partner" name="Validation" sequence="3" groups="hr.group_hr_manager"/>
+            <menuitem id="menu_valid_lelang" parent="menu_data_validasi" name="Validation Auction" sequence="1" action="product_lelang_action"/>
+            <menuitem id="menu_valid_donasi" parent="menu_data_validasi" name="Validation Donation" sequence="2" action="product_donasi_action"/>
+            <!-- <menuitem id="menu_top_up" parent="menu_data_validasi" name="Top Up" action="action_view_top_up" sequence="3"/> -->
+            <!-- 
             <menuitem id="menu_update_stock" parent="menu_data_merchandise" name="Update Stock" action="action_view_update_stock" sequence="3"/> -->
         <!-- <menuitem id="menu_config" parent="menu_merchandise" name="Pengaturan"/>
 	         <menuitem id="menu_ukuran" parent="menu_config" name="Ukuran" sequence="1" action="action_ukuran"/> -->
@@ -25,11 +27,18 @@
 
             <!-- <menuitem id="menu_hr_root" name="Employees" sequence="75"/> -->
         <menuitem 
-            id="tes" 
+            id="menu_fans" 
             parent="hr.menu_hr_root" 
             name="Fans / Supporter" 
             sequence="1" 
             action="action_show_fans" 
+            groups="hr.group_hr_manager"/>
+        <menuitem 
+            id="menu_rating_review" 
+            parent="hr.menu_human_resources_configuration" 
+            name="Rating and Review" 
+            sequence="1" 
+            action="rating_review_action" 
             groups="hr.group_hr_manager"/>
     </data>
 </odoo>
