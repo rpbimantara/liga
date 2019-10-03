@@ -16,12 +16,12 @@
 						<button name="action_valid" type="object" string="Validate" class="oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'tunda')]}"/>
 						<button name="action_match" type="object" string="Start Match" class="oe_highlight oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'valid')]}"/>
 						<button name="action_done" type="object" string="End Match" class="oe_highlight oe_read_only" attrs="{'invisible':[('status_jadwal', '!=', 'main')]}"/>
-						<field name="status_jadwal" widget="statusbar"/>
+						<field name="status_jadwal" status_jadwal="akan,valid,main,selesai" widget="statusbar"/>
 					</header>
 					<sheet>
 						<div class="oe_button_box" name="button_box">
 							<button name="open_list_moment" type="object" class="oe_stat_button" icon="fa-clock-o" string="Moments" attrs="{'invisible':[('status_jadwal', '!=', 'main')]}"/>
-							<button name="detail" type="object" class="oe_stat_button" icon="fa-home" string="Squad Home"/>
+							<!-- <button name="detail" type="object" class="oe_stat_button" icon="fa-home" string="Squad Home"/> -->
 							<!-- <button name="detail" type="object" class="oe_stat_button" icon="fa-plane" string="Squad Away"/> -->
 						</div>
 						<!-- <div class="oe_title">

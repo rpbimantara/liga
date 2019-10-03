@@ -29,9 +29,9 @@ class PersebayaJadwal(models.Model):
 		('away', 'Away Win')
 	], string="Result")
 	status_jadwal = fields.Selection([
-		('valid', 'Valid'),
-		('akan', 'Incoming'),
 		('tunda', 'Postponed'),
+		('akan', 'Incoming'),
+		('valid', 'Valid'),
 		('main', 'Play'),
 		('selesai', 'Done'),
 	], string="Status Jadwal", default='akan')
