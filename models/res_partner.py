@@ -11,6 +11,7 @@ class ResPartnerInherit(models.Model):
 	], string="Gender", default='Man')
 	saldo = fields.Integer(string="Coin",compute='_compute_saldo')
 	komunitas = fields.Char(string="Community")
+	invoice_ids = fields.One2many('account.invoice', 'partner_id', string='History Coin',domain=[('type','=','in_invoice'),('state','=','paid')])
 
 	property_account_receivable_id = fields.Many2one('account.account', company_dependent=True,
 		string="Account Receivable", oldname="property_account_receivable",
