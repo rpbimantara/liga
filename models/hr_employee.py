@@ -39,4 +39,44 @@ class HrEmployeeInherit(models.Model):
 
 	def _compute_rating(self):
 		for s in self:
-			print(s.rating_ids.rating)
+			if len(s.rating_ids)>0:
+				rating = sum([rat.rating for rat in s.rating_ids]) / len(s.rating_ids)
+				s.rating = str(rating)
+	
+	@api.one
+	def _compute_statistik(self):
+		self.tekel_sukses = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Tackles')]))
+		self.sukses_rebut = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Interception')]))
+		self.pelanggaran = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Fouls')]))
+		self.kartu_kuning = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Yellow Card')]))
+		self.kartu_merah = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Red Card')]))
+		self.offsides = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Offsides')]))
+		self.sapu_bersih = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Clearances')]))
+		self.penghadangan = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Block')]))
+		self.penyelamatan = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Saves')]))
+		self.gol_kick = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Goal Kick')]))
+		self.gol = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Goal')]))
+		self.drible_sukses = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Dribble')]))
+		self.lepas_control = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Possession Loss')]))
+		self.sundulan_kepala = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Aerial')]))
+		self.passing_sukses = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Passes')]))
+		self.passing_gagal = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Key. Passes')]))
+		self.assist = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Assist')]))
+
+		('Tackles', 'Tackles'),
+		('Interception', 'Interception'),
+		('Fouls', 'Fouls'),
+		('Yellow Card', 'Yellow Card'),
+		('Red Card', 'Red Card'),
+		('Offsides', 'Offsides'),
+		('Clearances', 'Clearances'),
+		('Corners', 'Corners'),
+		('Goal Kick', 'Goal Kick'),
+		('Goal', 'Goal'),
+		('Goal Penalty', 'Goal Penalty'),
+		('Dribble', 'Dribble'),
+		('Possession Loss', 'Possession Loss'),
+		('Aerial', 'Aerial'),
+		('Passes', 'Passes'),
+		('Key. Passes', ''),
+		('.', 'Assist.'),
