@@ -12,7 +12,10 @@ class ResPartnerInherit(models.Model):
 	saldo = fields.Integer(string="Coin",compute='_compute_saldo')
 	komunitas = fields.Char(string="Community")
 	invoice_ids = fields.One2many('account.invoice', 'partner_id', string='History Coin',domain=[('type','=','in_invoice'),('state','=','paid')])
-
+	state = fields.Selection([
+		('draft', 'Draft'),
+		('validate', 'Valid')
+	], string='State',default='draft')
 	property_account_receivable_id = fields.Many2one('account.account', company_dependent=True,
 		string="Account Receivable", oldname="property_account_receivable",
 		domain="[('internal_type', '=', 'receivable'), ('deprecated', '=', False)]",
@@ -30,6 +33,10 @@ class ResPartnerInherit(models.Model):
 		res = super(ResPartnerInherit,self).create(vals)
 		res['supplier'] = True
 		return res
+
+	@api.multi
+	def action_validate(self):
+		self.write({'state': 'validate'})
 
 	@api.one
 	def _compute_saldo(self):
@@ -111,3 +118,8 @@ class ResPartnerInherit(models.Model):
 				vals.append(data)
 
 		return vals
+
+
+	# @api.model
+	# def create_user(self,username,email,password,fcm_reg_ids):
+	# 	return [{'id':users_id.id}]

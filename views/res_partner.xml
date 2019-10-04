@@ -5,6 +5,12 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                    <header>
+                        <button name="action_validate" groups="base.group_system" string="Validate" type="object"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                </xpath>
                 <xpath expr="//field[@name='type']" position="after">
                     <field name="nik"/>
                     <field name="tgl_lahir"/>
