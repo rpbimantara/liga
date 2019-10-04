@@ -318,6 +318,8 @@ class PersebayaMoments(models.Model):
 		('Offsides', 'Offsides'),
 		('Clearances', 'Clearances'),
 		('Corners', 'Corners'),
+		('Block', 'Block'),
+		('Saves', 'Saves'),
 		('Goal Kick', 'Goal Kick'),
 		('Goal', 'Goal'),
 		('Goal Penalty', 'Goal Penalty'),
