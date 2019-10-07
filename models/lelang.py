@@ -121,5 +121,8 @@ class BidLelangPersebaya(models.Model):
 					'order_id'	: sale_id.id
 				})
 				sale_id.action_confirm()
-				sale_id.action_invoice_create()
+				invoice = sale_id.action_invoice_create()
+				invoice_id = self.env['account.invoice'].browse(invoice[0])
+				invoice_id.sudo().action_invoice_open()
+				invoice_id.sudo().pay_and_reconcile(self.env['account.journal'].search([('type', '=', 'cash')], limit=1), invoice_id.amount_total)
 		return res
