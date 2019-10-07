@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+import json
 
 class ProductTemplateInherits(models.Model):
 	_inherit = "product.template"
@@ -86,23 +87,110 @@ class ProductProductInherits(models.Model):
 		return vals
 
 class SaleOrderInherits(models.Model):
+	_inherit = "sale.order"
+
+	# @api.model
+	# def search_so(self,value,lines):
+	# 	so = self.env['sale.order'].sudo().search([('partner_id','=',value),('state','=','draft')])
+	# 	return so
+
+	@api.model
+	def create_so(self,value,lines):
+		try:
+			with self.env.cr.savepoint():
+				vals = []
+				sale_id = self.env['sale.order'].sudo().create({
+						'partner_id':value,
+						'payment_term_id':1,
+						'user_id':1
+					})
+				if  len(lines)> 0:
+					for l in lines:
+						self.env['sale.order.line'].create({
+							'order_id':sale_id.id,
+							'product_id':l.get('product_id'),
+							'event_id':l.get('event_id'),
+							'event_ticket_id':l.get('event_ticket_id'),
+							'product_uom_qty':l.get('product_uom_qty')
+						})
+					
+				data = {'id':sale_id.id}
+				vals.append(data)
+				return vals
+		except Exception as e:
+			raise e
+
+	@api.model
+	def create_so_checkout(self,value,lines):
+		try:
+			with self.env.cr.savepoint():
+				vals = []
+				sale_id = self.env['sale.order'].sudo().create({
+						'partner_id':value,
+						'payment_term_id':1,
+						'user_id':1
+					})
+				for l in lines:
+					self.env['sale.order.line'].create({
+						'order_id':sale_id.id,
+						'product_id':l.get('product_id'),
+						'event_id':l.get('event_id'),
+						'event_ticket_id':l.get('event_ticket_id'),
+						'product_uom_qty':l.get('product_uom_qty')
+					})
+					
+				data = {'id':sale_id.id}
+				vals.append(data)
+				return vals
+		except Exception as e:
+			raise e
+
+	@api.model
+	def confirm_so(self,value):
+		confirm = self.sudo()._confirm_so(value)
+		return [{'id':confirm}]
+
+	@api.multi
+	def _confirm_so(self,value):
+		sale_id = self.env['sale.order'].browse(value)
+		# sale_id._action_procurement_create()
+		sale_id.action_confirm()
+		# sale_id.order_line._update_registrations(confirm=sale_id.amount_total == 0, cancel_to_draft=False)
+		invoice = sale_id.sudo().action_invoice_create()
+		invoice_id = self.env['account.invoice'].browse(invoice[0])
+		invoice_id.sudo().action_invoice_open()
+		invoice_id.sudo().pay_and_reconcile(self.env['account.journal'].search([('type', '=', 'cash')], limit=1), invoice_id.amount_total)
+		invoice_id.mapped('invoice_line_ids.sale_line_ids')._update_registrations(confirm=True)
+				# ctx = { 'active_model': 'account.invoice', 'active_ids': [invoice_id.id] }
+				# register_payments = self.env['account.register.payments'].with_context(ctx).sudo().create()
+				# print(register_payments)
+				# payment_id = register_payments.sudo().create_payment()
+				# print(payment_id)
+				# invoice_id.sudo().action_invoice_paid()
+		return invoice_id.id
+
+
+class SaleOrderLineInherits(models.Model):
 	_inherit = "sale.order.line"
 
 	@api.model
 	def get_checkout_list(self,partner_id):
-		order_id = self.env['sale.order'].search([('partner_id','=',partner_id),('state','=','draft')]).id
-		order_ids = self.env['sale.order.line'].search([('order_id','=',order_id)])
 		vals = []
+		order_id = self.env['sale.order'].search([('partner_id','=',partner_id),('state','=','draft')]).id
+		print(">>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<,,,,,")
+		print(order_id)
+		order_ids = self.env['sale.order.line'].search([('order_id','=',order_id)])
+		print(order_ids)
 		for order in order_ids:
 			data = {
-				'id'	: order.id,
-				'nama'	: order.product_id.name,
-				'type'	: order.product_id.type,
-				'harga'	: order.price_unit,
-				'qty'	: order.product_uom_qty,
-				'image'	: order.product_id.image_medium,
-				'stock' : order.product_id.qty_available
-			}
+					'id'	: order.id,
+					'nama'	: order.product_id.name,
+					'type'	: order.product_id.type,
+					'harga'	: order.price_unit,
+					'qty'	: order.product_uom_qty,
+					'image'	: order.product_id.image_medium,
+					'stock' : order.product_id.qty_available
+				}
 			vals.append(data)
 		print(vals)
 		return vals
@@ -116,3 +204,27 @@ class DonasiPersebaya(models.Model):
 	user_bid = fields.Many2one('res.users',string="Participant")
 	nilai = fields.Integer(string="Nominal",required=True)
 	keterang = fields.Char(string="Note")
+
+	@api.model
+	def create(self,vals):
+		res = super(DonasiPersebaya,self).create(vals)
+		res.product_id.write({
+				'list_price' : res.product_id.list_price + res['nilai'],
+			})
+		sale_id = res.env['sale.order'].create({
+				'partner_id' : res.user_bid.partner_id.id,
+				'user_id' : res.product_id.create_uid.id,
+				'payment_term_id' : 1
+			})
+		if sale_id:
+			res.env['sale.order.line'].create({
+					'product_id' : res.product_id.product_variant_id.id,
+					'order_id'	: sale_id.id,
+					'price_unit':res['nilai']
+				})
+			sale_id.action_confirm()
+			invoice = sale_id.action_invoice_create()
+			invoice_id = self.env['account.invoice'].browse(invoice[0])
+			invoice_id.sudo().action_invoice_open()
+			invoice_id.sudo().pay_and_reconcile(self.env['account.journal'].search([('type', '=', 'cash')], limit=1), invoice_id.amount_total)
+		return res
