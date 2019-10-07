@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mail','hr','event','sale','purchase','account_accountant'],
+    'depends': ['base','mail','hr','event','event_sale','sale','sale_stock','purchase','account_accountant','delivery','account'],
 
     # always loaded
     'data': [

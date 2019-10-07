@@ -39,4 +39,23 @@ class EventRegistrationBarcode(models.Model):
 		res.barcode_image = base64.b64encode(file)
 		os.remove(fullname)
 		return res
+
+	@api.model
+	def search_ticket(self,partner_id):
+		vals = []
+		registration_ids = self.env['event.registration'].sudo().search([('partner_id','=',partner_id),('state','=','open')])
+		print(registration_ids)
+		for registration_id in registration_ids:
+			data = {
+				'id':registration_id.id,
+				'name':registration_id.name,
+				'date_open':registration_id.date_open,
+				'event_id':registration_id.event_id.name,
+				'event_ticket_id':registration_id.event_ticket_id.name,
+				'barcode_image':registration_id.barcode_image
+			}
+			print(data)
+			vals.append(data)
+		return vals
+
 		
