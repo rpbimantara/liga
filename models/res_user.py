@@ -34,7 +34,10 @@ class ResUsersInherit(models.Model):
 			'password':password,
 			'fcm_reg_ids':reg_id
 		}
-		result = str(self._create_user_from_template(values))
+		counter = 1
+		if counter == 1:
+			result = str(self.sudo()._create_user_from_template(values))
+			counter += 1
 		# partner_id = self.env['res.partner'].create({
 		# 			'name':username,
 		# 			'email':email,
