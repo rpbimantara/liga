@@ -7,12 +7,14 @@
             <field name="arch" type="xml">
                 <xpath expr="//sheet" position="before">
                     <header>
-                        <button name="action_valid_lelang" string="Validasi" type="object" attrs="{'invisible': [('type', 'not in', ['lelang']),('status_lelang', 'not in', ['jalan'])]}"/>
-                        <button name="action_end_lelang" string="End Lelang" type="object" attrs="{'invisible': [('type', 'not in', ['lelang']),('status_lelang', 'not in', ['selesai'])]}"/>
-                        <field name="status_lelang" widget="statusbar" attrs="{'invisible': [('type', 'not in', ['lelang'])]}"/>
-                        <button name="action_valid_donasi" string="Validasi" type="object" attrs="{'invisible': [('type', 'not in', ['donasi']),('status_donasi', 'not in', ['jalan'])]}"/>
-                        <button name="action_end_donasi" string="End Donation" type="object" attrs="{'invisible': [('type', 'not in', ['donasi']),('status_donasi', 'not in', ['selesai'])]}"/>
-                        <field name="status_donasi" widget="statusbar" attrs="{'invisible': [('type', 'not in', ['donasi'])]}"/>
+                        <button name="action_refuse_lelang" groups="base.group_system" string="Refuse" type="object" attrs="{'invisible': ['|',('type', 'in', ['consu','service','product','donasi']),('status_lelang', 'in', ['refuse','jalan','selesai'])]}"/>
+                        <button name="action_valid_lelang" groups="base.group_system" class="oe_highlight" string="Validasi" type="object" attrs="{'invisible': ['|',('type', 'in', ['consu','service','product','donasi']),('status_lelang', 'in', ['refuse','jalan','selesai'])]}"/>
+                        <button name="action_end_lelang" groups="base.group_system" class="oe_highlight" string="End Auction" type="object" attrs="{'invisible': ['|',('type', 'in', ['consu','service','product','donasi']),('status_lelang', 'in', ['refuse','draft','selesai'])]}"/>
+                        <field name="status_lelang" widget="statusbar" attrs="{'invisible': [('type', 'in', ['consu','service','product','donasi'])]}"/>
+                        <button name="action_refuse_donasi" groups="base.group_system" string="Refuse" type="object" attrs="{'invisible': ['|',('type', 'in', ['consu','service','product','lelang']),('status_donasi', 'in', ['refuse','jalan','selesai'])]}"/>
+                        <button name="action_valid_donasi" groups="base.group_system" class="oe_highlight" string="Validasi" type="object" attrs="{'invisible': ['|',('type', 'in', ['consu','service','product','lelang']),('status_donasi', 'in', ['refuse','jalan','selesai'])]}"/>
+                        <button name="action_end_donasi" groups="base.group_system" class="oe_highlight" string="End Donation" type="object" attrs="{'invisible': ['|',('type', 'in', ['consu','service','product','lelang']),('status_donasi', 'in', ['refuse','draft','selesai'])]}"/>
+                        <field name="status_donasi" widget="statusbar" attrs="{'invisible': [('type', 'in', ['consu','service','product','lelang'])]}"/>
                     </header>
                 </xpath>
                 <xpath expr="//field[@name='barcode']" position="attributes">

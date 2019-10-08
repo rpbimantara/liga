@@ -93,3 +93,16 @@ class ResUsersInherit(models.Model):
             # copy may failed if asked login is not available.
 			# print(e)
 			raise e
+
+	@api.model
+	def reset_password_users(self, login):
+		""" retrieve the user corresponding to login (login or email),
+			and reset their password
+		"""
+
+		users = self.env['res.users'].search([('login', '=', login)])
+		if not users:
+			users = self.env['res.users'].search([('email', '=', login)])
+		if len(users) != 1:
+			raise Exception(_('Reset password: invalid username or email'))
+		return users.sudo().action_reset_password()

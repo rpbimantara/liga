@@ -40,17 +40,30 @@ class ResPartnerInherit(models.Model):
 
 	@api.one
 	def _compute_saldo(self):
-		customer_ids = self.env['account.invoice'].search([('partner_id','=',self.id),('type','=','out_invoice'),('state','=','paid')])
-		salesperson_ids = self.env['account.invoice'].search([('user_id','=',self.user_ids.id),('type','=','out_invoice'),('state','=','paid')])
-		purchase_ids = self.env['account.invoice'].search([('partner_id','=',self.id),('type','in',['in_invoice','out_refund']),('state','=','paid')])
-		self.saldo = sum([purchase.amount_untaxed for purchase in purchase_ids]) + sum([salesperson.amount_total for salesperson in salesperson_ids]) - sum([customer.amount_untaxed for customer in customer_ids])
+		if self.user_ids.id:
+			sql = """SELECT l.id,l.name,l.create_date,i.amount_total,i.amount_tax from account_invoice i, account_invoice_line l, product_product p
+					WHERE i.id = l.invoice_id AND p.id = l.product_id
+					AND i.state = 'paid' AND i.type = 'out_invoice'
+					AND p.create_uid = %s"""
+			self._cr.execute(sql, (self.user_ids.id,))
+			sales_ids = self._cr.dictfetchall()
+			customer_ids = self.env['account.invoice'].search([('partner_id','=',self.id),('type','=','out_invoice'),('state','=','paid')])
+			# salesperson_ids = self.env['account.invoice'].search([('user_id','=',self.user_ids.id),('type','=','out_invoice'),('state','=','paid')])
+			purchase_ids = self.env['account.invoice'].search([('partner_id','=',self.id),('type','in',['in_invoice','out_refund']),('state','=','paid')])
+			self.saldo = sum([purchase.amount_untaxed for purchase in purchase_ids]) + sum([round(sale.get('amount_total')) for sale in sales_ids]) - sum([customer.amount_untaxed for customer in customer_ids])
 
 	@api.model
 	def get_coin_history(self,partner_id,user_id):
 		customer_ids = self.env['account.invoice'].search([('partner_id','=',partner_id),('type','in',['out_invoice','out_refund']),('state','=','paid')])
-		salesperson_ids = self.env['account.invoice'].search([('user_id','=',user_id),('type','=','out_invoice'),('state','=','paid')])
-		purchase_ids = self.env['account.invoice'].search([('partner_id','=',partner_id),('type','=','in_invoice'),('state','=','paid')])
-		
+		# salesperson_ids = self.env['account.invoice'].search([('user_id','=',user_id),('type','=','out_invoice'),('state','=','paid')])
+		purchase_ids = self.env['account.invoice'].search([('partner_id','=',partner_id),('type','in',['in_invoice','out_refund']),('state','=','paid')])
+		sql = """SELECT l.id,l.name,l.create_date,i.amount_total,i.amount_tax from account_invoice i, account_invoice_line l, product_product p
+				WHERE i.id = l.invoice_id AND p.id = l.product_id
+				AND i.state = 'paid' AND i.type = 'out_invoice'
+				AND p.create_uid = %s"""
+		self._cr.execute(sql, (user_id,))
+		sales_ids = self._cr.dictfetchall()
+
 		vals= []
 
 		for customer in customer_ids:
@@ -85,26 +98,38 @@ class ResPartnerInherit(models.Model):
 						}
 						vals.append(data)
 
-		for salesperson in salesperson_ids:
-			for c in salesperson.invoice_line_ids:
-				data ={
-					'id'   : c.id,
-					'name' : c.product_id.name,
-					'date' : c.create_date,
-					'price': c.price_subtotal,
+		for sale in sales_ids:
+			print(sale)
+			data ={
+					'id'   : sale.get('id'),
+					'name' : sale.get('name'),
+					'date' : sale.get('create_date'),
+					'price': round(sale.get('amount_total')),
 					'type' : 'salesperson'
 				}
-				vals.append(data)
-			tax_ids = self.env['account.invoice.tax'].search([('invoice_id','=',c.id)])
+			vals.append(data)
+			tax_ids = self.env['account.invoice.tax'].search([('invoice_id','=',sale.get('id'))])
 			for tax in tax_ids:
 				data ={
-					'id'   : tax.id,
-					'name' : 'Tax Sales',
-					'date' : tax.create_date,
-					'price': round(tax.amount),
-					'type' : 'tax'
-				}
+						'id'   : tax.id,
+						'name' : 'Tax Sales',
+						'date' : tax.create_date,
+						'price': round(tax.amount),
+						'type' : 'tax'
+					}
 				vals.append(data)
+
+		# for salesperson in salesperson_ids:
+		# tax_ids = self.env['account.invoice.tax'].search([('invoice_id','=',c.id)])
+		# for tax in tax_ids:
+		# 		data ={
+		# 			'id'   : tax.id,
+		# 			'name' : 'Tax Sales',
+		# 			'date' : tax.create_date,
+		# 			'price': round(tax.amount),
+		# 			'type' : 'tax'
+		# 		}
+		# 	vals.append(data)
 
 		for purchase in purchase_ids:
 			for c in purchase.invoice_line_ids:
@@ -112,11 +137,10 @@ class ResPartnerInherit(models.Model):
 					'id'   : c.id,
 					'name' : c.product_id.name,
 					'date' : c.create_date,
-					'price': c.price_unit,
+					'price': c.price_subtotal,
 					'type' : 'purchase'
 				}
 				vals.append(data)
-
 		return vals
 
 
