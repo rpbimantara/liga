@@ -96,6 +96,33 @@ class BidLelangPersebaya(models.Model):
 				'ob'		 : res.product_id.ob + res.product_id.inc,
 				'list_price' : res['nilai'],
 			})
+			# product_id = res.env['product.product'].search([('product_tmpl_id','=',res.product_id.id)])
+			# so_line = res.env['sale.order.line'].search([('product_id','=',product_id.id)])
+			# if so_line:
+			# 	so_line.write({'price_unit':res['nilai']})
+			# 	so =res.env['sale.order'].search([('id','=',so_line.order_id.id)])
+			# 	so.write({'partner_id':res.user_bid.partner_id.id})
+			# 	for inv in so.invoice_ids:
+			# 		inv.write({'partner_id':res.user_bid.partner_id.id})
+			# 		inv_line = res.env['account.invoice.line'].search([('invoice_id','=',inv.id),('product_id','=',product_id.id)])
+			# 		if inv_line:
+			# 			inv_line.write({'price_unit':res['nilai']})
+			# else:
+			# 	sale_id = res.env['sale.order'].sudo().create({
+			# 		'partner_id' : res.user_bid.partner_id.id,
+			# 		# 'user_id' : res.product_id.create_uid.id,
+			# 		'payment_term_id' : 1
+			# 	})
+			# 	# if sale_id:
+				# 	res.env['sale.order.line'].sudo().create({
+				# 		'product_id' : res.product_id.product_variant_id.id,
+				# 		'order_id'	: sale_id.id
+				# 	})
+				# 	sale_id.action_confirm()
+				# 	invoice = sale_id.action_invoice_create()
+				# 	invoice_id = self.env['account.invoice'].browse(invoice[0])
+				# 	invoice_id.sudo().action_invoice_open()
+				# 	invoice_id.sudo().pay_and_reconcile(self.env['account.journal'].search([('type', '=', 'cash')], limit=1), invoice_id.amount_total)
 
 		if res.keterang ==  'BIN' or res.nilai >= res.product_id.binow:
 			res.product_id.write({
@@ -110,19 +137,19 @@ class BidLelangPersebaya(models.Model):
 			# 		'order_id'	: order_id.id
 			# 	})
 			# else:
-			sale_id = res.env['sale.order'].create({
-				'partner_id' : res.user_bid.partner_id.id,
-				'user_id' : res.product_id.create_uid.id,
-				'payment_term_id' : 1
-			})
-			if sale_id:
-				res.env['sale.order.line'].create({
-					'product_id' : res.product_id.product_variant_id.id,
-					'order_id'	: sale_id.id
-				})
-				sale_id.action_confirm()
-				invoice = sale_id.action_invoice_create()
-				invoice_id = self.env['account.invoice'].browse(invoice[0])
-				invoice_id.sudo().action_invoice_open()
-				invoice_id.sudo().pay_and_reconcile(self.env['account.journal'].search([('type', '=', 'cash')], limit=1), invoice_id.amount_total)
+			# sale_id = res.env['sale.order'].create({
+			# 	'partner_id' : res.user_bid.partner_id.id,
+			# 	'user_id' : res.product_id.create_uid.id,
+			# 	'payment_term_id' : 1
+			# })
+			# if sale_id:
+			# 	res.env['sale.order.line'].create({
+			# 		'product_id' : res.product_id.product_variant_id.id,
+			# 		'order_id'	: sale_id.id
+			# 	})
+			# 	sale_id.action_confirm()
+			# 	invoice = sale_id.action_invoice_create()
+			# 	invoice_id = self.env['account.invoice'].browse(invoice[0])
+			# 	invoice_id.sudo().action_invoice_open()
+			# 	invoice_id.sudo().pay_and_reconcile(self.env['account.journal'].search([('type', '=', 'cash')], limit=1), invoice_id.amount_total)
 		return res

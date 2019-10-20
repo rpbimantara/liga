@@ -1,25 +1,27 @@
+# -*- coding: utf-8 -*-
+
 from odoo import fields, models,api
 
 class HrEmployeeInherit(models.Model):
 	_inherit = 'hr.employee'
 
-	tekel_sukses = fields.Integer(string="Tackles")
-	sukses_rebut = fields.Integer(string="Interception")
-	pelanggaran = fields.Integer(string="Fouls")
-	kartu_kuning = fields.Integer(string="Yellow Card")
-	kartu_merah = fields.Integer(string="Red Card")
-	offsides = fields.Integer(string="Offsides")
-	sapu_bersih = fields.Integer(string="Clearances")
-	penghadangan = fields.Integer(string="Block")
-	penyelamatan = fields.Integer(string="Saves")
-	gol_kick = fields.Integer(string="Goal Kick")
-	gol = fields.Integer(string="Goal")
-	drible_sukses = fields.Integer(string="Dribble")
-	lepas_control = fields.Integer(string="Possession Loss")
-	sundulan_kepala = fields.Integer(string="Aerial")
-	passing_sukses = fields.Integer(string="Passes")
-	passing_gagal = fields.Integer(string="Key. Passes")
-	assist = fields.Integer(string="Assist.")
+	tekel_sukses = fields.Integer(string="Tackles",compute='_compute_statistik')
+	sukses_rebut = fields.Integer(string="Interception",compute='_compute_statistik')
+	pelanggaran = fields.Integer(string="Fouls",compute='_compute_statistik')
+	kartu_kuning = fields.Integer(string="Yellow Card",compute='_compute_statistik')
+	kartu_merah = fields.Integer(string="Red Card",compute='_compute_statistik')
+	offsides = fields.Integer(string="Offsides",compute='_compute_statistik')
+	sapu_bersih = fields.Integer(string="Clearances",compute='_compute_statistik')
+	penghadangan = fields.Integer(string="Block",compute='_compute_statistik')
+	penyelamatan = fields.Integer(string="Saves",compute='_compute_statistik')
+	gol_kick = fields.Integer(string="Goal Kick",compute='_compute_statistik')
+	gol = fields.Integer(string="Goal",compute='_compute_statistik')
+	drible_sukses = fields.Integer(string="Dribble",compute='_compute_statistik')
+	lepas_control = fields.Integer(string="Possession Loss",compute='_compute_statistik')
+	sundulan_kepala = fields.Integer(string="Aerial",compute='_compute_statistik')
+	passing_sukses = fields.Integer(string="Passes",compute='_compute_statistik')
+	passing_gagal = fields.Integer(string="Key. Passes",compute='_compute_statistik')
+	assist = fields.Integer(string="Assist.",compute='_compute_statistik')
 	rating_ids = fields.One2many('persebaya.rating','employee_id',string="Rating & Review")
 	club_id = fields.Many2one('persebaya.club', string="Club")
 	status_pemain = fields.Selection([
@@ -62,21 +64,3 @@ class HrEmployeeInherit(models.Model):
 		self.passing_sukses = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Passes')]))
 		self.passing_gagal = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Key. Passes')]))
 		self.assist = len(self.env['persebaya.moments'].search([('players_moments','=',self.id),('moments','=','Assist')]))
-
-		('Tackles', 'Tackles'),
-		('Interception', 'Interception'),
-		('Fouls', 'Fouls'),
-		('Yellow Card', 'Yellow Card'),
-		('Red Card', 'Red Card'),
-		('Offsides', 'Offsides'),
-		('Clearances', 'Clearances'),
-		('Corners', 'Corners'),
-		('Goal Kick', 'Goal Kick'),
-		('Goal', 'Goal'),
-		('Goal Penalty', 'Goal Penalty'),
-		('Dribble', 'Dribble'),
-		('Possession Loss', 'Possession Loss'),
-		('Aerial', 'Aerial'),
-		('Passes', 'Passes'),
-		('Key. Passes', ''),
-		('.', 'Assist.'),

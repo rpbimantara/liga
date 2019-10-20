@@ -1,17 +1,17 @@
 <odoo>
-	<data noupdate="1">
-        <record id="unique_name" model="ir.cron">
+	<data>
+        <record id="lelang_cron" model="ir.cron">
             <field name="name">Cron Due Date Lelang </field>
             <field name="active" eval="True" />
             <field name="user_id" ref="base.user_root" />
 			<field name="priority">1</field>
-            <field name="interval_number">5</field>
+            <field name="interval_number">1</field>
             <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
-            <field name="doal">1</field>
+            <!-- <field name="doal">1</field> -->
             <!--<field name="nextcall" >2016-12-31 23:59:59</field>-->
-            <field name="model" eval="'persebaya_lelang '" />
-            <field name="function" eval="'selisih_waktu '" />
+            <field name="model" eval="'product.template'" />
+            <field name="function" eval="'selisih_waktu'" />
             <field name="args" eval="()" />
             <!--<field name="priority" eval="5" />-->
         </record>

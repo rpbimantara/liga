@@ -1,12 +1,17 @@
+# -*- coding: utf-8 -*-
+
 from odoo import api, fields, models
 import json
 from pyfcm import FCMNotification
+_count_caller = 0
+from datetime import datetime
 
 class ProductTemplateInherits(models.Model):
 	_inherit = "product.template"
 
 	variant_text = fields.Text(String="Variant")
 	type = fields.Selection(selection_add=[('lelang', 'Auction'),('donasi', 'Donation')])
+	is_deleted = fields.Boolean(string="Deleted by User",default=False)
 	ob = fields.Integer(string="Open Bid")
 	inc = fields.Integer(string="Increment")
 	binow = fields.Integer(string="BIN")
@@ -32,6 +37,14 @@ class ProductTemplateInherits(models.Model):
 	# def _onchange_status_lelang(self):
 	# 	if self.status_lelang == 'selesai' and self.pemenang:
 
+	def selisih_waktu(self):
+		datalelang = self.env['product.template'].search([('type','=','lelang'),('status_lelang','=','jalan')])
+		for s in datalelang:
+			if datetime.strptime(s.due_date, '%Y-%m-%d %H:%M:%S') <= datetime.now():
+				s.status_lelang = "selesai"
+				winner = self.env['persebaya.lelang.bid'].search([('product_id','=',s.id)],order='id desc',limit=1)
+				s.pemenang = winner.user_bid.id
+
 	@api.model
 	def create_product(self,image_medium,name,list_price,qty,description_sale,create_uid):
 		try:
@@ -47,8 +60,9 @@ class ProductTemplateInherits(models.Model):
 						}
 				template_id = self.env['product.template'].sudo().create(product_data)
 				template_id.write({'create_uid':create_uid})
-				product_id = self.env['product.product'].search([('product_tmpl_id','=',template_id.id)])
-				stock =self.update_qty(product_id.id,qty)
+				
+				# product_id = self.env['product.product'].search([('product_tmpl_id','=',template_id.id)])
+				stock =self.update_qty(template_id.id,qty)
 				
 				data = {'name':'create'}
 				vals.append(data)
@@ -59,11 +73,14 @@ class ProductTemplateInherits(models.Model):
 	@api.model
 	def update_qty(self,template_id,qty):
 		product_id = self.env['product.product'].search([('product_tmpl_id','=',template_id)])
+		print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>.")
+		print(product_id)
 		stock_quant = self.env['stock.quant'].sudo().create({
 					'product_id':product_id.id,
 					'qty':qty,
 					'location_id':15
 				})
+		print(stock_quant)
 		return stock_quant.id
 
 	def action_refuse_donasi(self):
@@ -93,7 +110,7 @@ class ProductTemplateInherits(models.Model):
 			
 
 	def action_refuse_lelang(self):
-		self.write({'status_donasi' : 'tolak'})
+		self.write({'status_lelang' : 'tolak'})
 		message_title = "Persebaya Fans Auction"
 		message_body  = "Your auction items (" + self.name + ") has been refused."
 		data = {'id': self.id}
@@ -101,7 +118,7 @@ class ProductTemplateInherits(models.Model):
 		self.send_mail(message_title,message_body)
 
 	def action_valid_lelang(self):
-		self.write({'status_donasi' : 'jalan'})
+		self.write({'status_lelang' : 'jalan'})
 		message_title = "Persebaya Fans Auction"
 		message_body  = "Your auction items (" + self.name + ") is on progres."
 		data = {'id': self.id}
@@ -109,7 +126,7 @@ class ProductTemplateInherits(models.Model):
 		self.send_mail(message_title,message_body)
 
 	def action_end_lelang(self):
-		self.write({'status_donasi' : 'selesai'})
+		self.write({'status_lelang' : 'selesai'})
 		message_title = "Persebaya Fans Auction"
 		message_body  = "Your auction items (" + self.name + ") finished. Send it to the winner :" + self.pemenang.name
 		data = {'id': self.id}
@@ -186,13 +203,14 @@ class SaleOrderInherits(models.Model):
 
 	@api.model
 	def create_so(self,value,lines):
-		try:
-			with self.env.cr.savepoint():
+		# try:
+		# 	with self.env.cr.savepoint():
 				vals = []
 				sale_id = self.env['sale.order'].sudo().create({
 						'partner_id':value,
 						'payment_term_id':1,
-						'user_id':1
+						'user_id':1,
+						'state':'sent'
 					})
 				if  len(lines)> 0:
 					for l in lines:
@@ -203,81 +221,154 @@ class SaleOrderInherits(models.Model):
 							'event_ticket_id':l.get('event_ticket_id'),
 							'product_uom_qty':l.get('product_uom_qty')
 						})
-					
 				data = {'id':sale_id.id}
 				vals.append(data)
 				return vals
-		except Exception as e:
-			raise e
+		# except Exception as e:
+		# 	raise e
 
 	@api.model
-	def create_so_checkout(self,value,lines):
-		try:
-			with self.env.cr.savepoint():
+	def create_so_ticket(self,value,lines):
+		# try:
+		# 	with self.env.cr.savepoint():
 				vals = []
 				sale_id = self.env['sale.order'].sudo().create({
 						'partner_id':value,
 						'payment_term_id':1,
+						'user_id':1,
+					})
+				if  len(lines)> 0:
+					for l in lines:
+						self.env['sale.order.line'].create({
+							'order_id':sale_id.id,
+							'product_id':l.get('product_id'),
+							'event_id':l.get('event_id'),
+							'event_ticket_id':l.get('event_ticket_id'),
+							'product_uom_qty':l.get('product_uom_qty')
+						})
+				data = {'id':sale_id.id}
+				vals.append(data)
+				return vals
+		# except Exception as e:
+		# 	raise e
+
+	@api.model
+	def create_so_donasi(self,partner_id,template_id,donasi):
+		product_id = self.env['product.product'].search([('product_tmpl_id','=',template_id)])
+		sale_id = self.env['sale.order'].create({
+						'partner_id':partner_id,
+						'payment_term_id':1,
 						'user_id':1
 					})
-				for l in lines:
-					self.env['sale.order.line'].create({
+		if sale_id:
+			self.env['sale.order.line'].sudo().create({
 						'order_id':sale_id.id,
-						'product_id':l.get('product_id'),
-						'event_id':l.get('event_id'),
-						'event_ticket_id':l.get('event_ticket_id'),
-						'product_uom_qty':l.get('product_uom_qty')
+						'product_id':product_id.id,
+						'product_uom_qty':1,
+						'price_unit':donasi
+					})
+			self.sudo().notify_donatur(partner_id,product_id.name)
+			return [{'id':sale_id.id}]
+
+	@api.model
+	def create_so_lelang(self,partner_id,template_id,lelang,status):
+		product_id = self.env['product.product'].search([('product_tmpl_id','=',template_id)])
+		so_line = self.env['sale.order.line'].search([('product_id','=',product_id.id)])
+		if so_line:
+			so_line.write({'price_unit':lelang})
+			so =self.env['sale.order'].search([('id','=',so_line.order_id.id)])
+			so.write({'partner_id':partner_id,'confirmation_date':datetime.now()})
+			for inv in so.invoice_ids:
+				inv.write({'partner_id':partner_id,'date_invoice':datetime.now()})
+				inv_line = self.env['account.invoice.line'].search([('invoice_id','=',inv.id),('product_id','=',product_id.id)])
+				if inv_line:
+					inv_line.write({'price_unit':lelang})
+			return [{'id':0}]
+		else:
+			sale_id = self.env['sale.order'].sudo().create({
+				'partner_id' : partner_id,
+				'user_id' : product_id.create_uid.id,
+				'payment_term_id' : 1
+			})
+			if sale_id:
+				self.env['sale.order.line'].sudo().create({
+					'order_id'	: sale_id.id,
+					'product_id':product_id.id,
+					'price_unit':lelang
+				})
+			return [{'id':sale_id.id}]
+
+	@api.model
+	def create_so_checkout(self,value,lines):
+		# try:
+		# 	with self.env.cr.savepoint():
+				vals = []
+				sale_id = self.env['sale.order'].sudo().create({
+						'partner_id':value,
+						'payment_term_id':1,
+						'user_id':1,
+					})
+				for l in lines:
+					self.env['sale.order.line'].sudo().create({
+						'order_id':sale_id.id,
+						'product_id':l
 					})
 					
 				data = {'id':sale_id.id}
 				vals.append(data)
 				return vals
-		except Exception as e:
-			raise e
+		# except Exception as e:
+		# 	raise e
 
+	# @api.model
+	# def confirm_so(self,value):
+	# 	confirm = self.sudo()._confirm_so(value)
+	# 	return [{'id':confirm}]
 	@api.model
 	def confirm_so(self,value):
-		confirm = self.sudo()._confirm_so(value)
-		return [{'id':confirm}]
-
-	@api.multi
-	def _confirm_so(self,value):
 		sale_id = self.env['sale.order'].browse(value)
-		# sale_id._action_procurement_create()
 		sale_id.action_confirm()
-		# sale_id.order_line._update_registrations(confirm=sale_id.amount_total == 0, cancel_to_draft=False)
-		invoice = sale_id.sudo().action_invoice_create()
-		invoice_id = self.env['account.invoice'].browse(invoice[0])
-		invoice_id.sudo().action_invoice_open()
-		invoice_id.sudo().pay_and_reconcile(self.env['account.journal'].search([('type', '=', 'cash')], limit=1), invoice_id.amount_total)
-		invoice_id.mapped('invoice_line_ids.sale_line_ids')._update_registrations(confirm=True)
-		# sale_id.picking_ids.action_done()
-		self.notify_customer(sale_id.partner_id.id)
-		picking = self.env['stock.picking'].search([('id','in',[sale_id.picking_ids.id]),('state','!=','done')])
-		for pick in picking:
-			for product in pick.move_lines:
-				self.notify_seller(
-					pick.partner_id.name,
-					pick.partner_id.street,
-					product.product_id.create_uid.partner_id.id,
-					product.product_id.name,
-					str(product.ordered_qty))
-				# ctx = { 'active_model': 'account.invoice', 'active_ids': [invoice_id.id] }
-				# register_payments = self.env['account.register.payments'].with_context(ctx).sudo().create()
-				# print(register_payments)
-				# payment_id = register_payments.sudo().create_payment()
-				# print(payment_id)
-				# invoice_id.sudo().action_invoice_paid()
-		return invoice_id.id
-	
-	def notify_customer(self,partner_id):
+		return_id = 0
+		if sale_id.invoice_status != 'invoiced':
+			invoice = sale_id.sudo().action_invoice_create()
+			invoice_id = self.env['account.invoice'].browse(invoice[0])
+			invoice_id.sudo().action_invoice_open()
+			invoice_id.pay_and_reconcile(self.env['account.journal'].search([('type', '=', 'cash')], limit=1), invoice_id.amount_total)
+			regis = invoice_id.mapped('invoice_line_ids.sale_line_ids')._update_registrations(confirm=True)
+			# if not regis == True:
+			sale_id.picking_ids.action_done()
+			self.sudo().notify_customer(sale_id.partner_id.id,sale_id.name)
+			picking = self.env['stock.picking'].search([('id','in',[sale_id.picking_ids.id]),('state','!=','done')])
+			for pick in picking:
+				for product in pick.move_lines:
+					self.notify_seller(
+							pick.partner_id.name,
+							pick.partner_id.street,
+							product.product_id.create_uid.partner_id.id,
+							product.product_id.name,
+							str(product.ordered_qty))
+			return_id = invoice_id.id
+		return [{'id':return_id}]
+
+	def notify_donatur(self,partner_id,donation_name):
 		users = self.env['res.users'].search([('partner_id','=',partner_id)])
 		fcm_regids = [i.fcm_reg_ids.encode('ascii','ignore') for i in users]
-		message_title = "Persebaya Fans Store"
-		message_body  = "Your order is on progress"
+		message_title = "Persebaya Fans Donation"
+		message_body  = "Thanks for your donation in " + donation_name
 		data = {'id': self.id}
 		self.push_pyfcm_multi(fcm_regids, message_title, message_body, data)
 		self.send_mail(message_title,message_body,partner_id)
+		return
+
+	def notify_customer(self,partner_id,sale_id):
+		users = self.env['res.users'].search([('partner_id','=',partner_id)])
+		fcm_regids = [i.fcm_reg_ids.encode('ascii','ignore') for i in users]
+		message_title = "Persebaya Fans Store"
+		message_body  = "Your order " + sale_id +" is on progress"
+		data = {'id': self.id}
+		self.push_pyfcm_multi(fcm_regids, message_title, message_body, data)
+		self.send_mail(message_title,message_body,partner_id)
+		return
 	
 	def notify_seller(self,partner_name,partner_street,seller_id,product_name,product_qty):
 		users = self.env['res.users'].search([('partner_id','=',seller_id)])
@@ -287,6 +378,7 @@ class SaleOrderInherits(models.Model):
 		data = {'id': self.id}
 		self.send_mail(message_title,message_body,seller_id)
 		self.push_pyfcm_multi(fcm_regids, message_title, message_body, data)
+		return
 
 	def push_pyfcm_multi(self, to_regids, message_title, message_body, data=False):
 		push_service = FCMNotification(api_key=self.env.user.company_id.api_key)
@@ -294,6 +386,7 @@ class SaleOrderInherits(models.Model):
 		message_title=message_title,
 		message_body=message_body)
 		print(result)
+		return
 
 	def send_mail(self,message_title,message_body,partner_id):
 		# user = self.env['res.users'].browse(current_uid)
@@ -306,14 +399,18 @@ class SaleOrderInherits(models.Model):
 					'model': self._name,
 					'res_id': self.id,
 					})
+		return
 
 class SaleOrderLineInherits(models.Model):
 	_inherit = "sale.order.line"
 
+	is_send = fields.Boolean(string="Send",default=False)
+	is_received = fields.Boolean(string="Received",default=False)
+
 	@api.model
 	def get_checkout_list(self,partner_id):
 		vals = []
-		order_id = self.env['sale.order'].search([('partner_id','=',partner_id),('state','=','draft')]).id
+		order_id = self.env['sale.order'].search([('partner_id','=',partner_id),('state','=','sent')]).id
 		order_ids = self.env['sale.order.line'].search([('order_id','=',order_id)])
 		for order in order_ids:
 			data = {
@@ -326,6 +423,52 @@ class SaleOrderLineInherits(models.Model):
 					'stock' : order.product_id.qty_available
 				}
 			vals.append(data)
+		return vals
+
+	@api.model
+	def get_purchase_history(self,partner_id):
+		vals = []
+		order_id = self.env['sale.order'].search([('partner_id','=',partner_id),('invoice_status','=','invoiced')])
+		for line in order_id:
+			order_ids = self.env['sale.order.line'].search([('order_id','=',line.id)])
+			for order in order_ids:
+				if order.product_id.type ==  'product':
+					data = {
+							'id'	: order.id,
+							'order_name'	: line.name,
+							'name'	: order.product_id.name,
+							'owner'	: order.product_id.create_uid.name,
+							'harga'	: order.price_unit,
+							'qty'	: order.product_uom_qty,
+							'image'	: order.product_id.image_medium,
+							'is_send':order.is_send,
+							'is_received': order.is_received,
+							'date' : line.confirmation_date
+						}
+					vals.append(data)
+		return vals
+	
+	@api.model
+	def get_sale_history(self,partner_id):
+		vals = []
+		user_id = self.env['res.partner'].search([('id','=',partner_id)])
+		order_id = self.env['sale.order'].search([('invoice_status','=','invoiced')])
+		for line in order_id:
+			order_ids = self.env['sale.order.line'].search([('order_id','=',line.id)])
+			for order in order_ids:
+				if order.product_id.type ==  'product' and order.product_id.create_uid == user_id.user_ids :
+					data = {
+							'id'	: order.id,
+							'order_name'	: line.name,
+							'nama'	: order.product_id.name,
+							'harga'	: order.price_unit,
+							'qty'	: order.product_uom_qty,
+							'image'	: order.product_id.image_medium,
+							'date' : line.confirmation_date,
+							'is_send':order.is_send,
+							'is_received': order.is_received,
+						}
+					vals.append(data)
 		return vals
 
 
@@ -346,7 +489,7 @@ class DonasiPersebaya(models.Model):
 			})
 		sale_id = res.env['sale.order'].create({
 				'partner_id' : res.user_bid.partner_id.id,
-				'user_id' : res.product_id.create_uid.id,
+				'user_id' : 1,
 				'payment_term_id' : 1
 			})
 		if sale_id:
@@ -355,9 +498,12 @@ class DonasiPersebaya(models.Model):
 					'order_id'	: sale_id.id,
 					'price_unit':res['nilai']
 				})
-			sale_id.action_confirm()
-			invoice = sale_id.action_invoice_create()
-			invoice_id = self.env['account.invoice'].browse(invoice[0])
-			invoice_id.sudo().action_invoice_open()
-			invoice_id.sudo().pay_and_reconcile(self.env['account.journal'].search([('type', '=', 'cash')], limit=1), invoice_id.amount_total)
-		return res
+			sale_id.confirm_so(sale_id.id)
+			sale_id.notify_donatur(res.user_bid.partner_id.id,res.product_id.product_variant_id.name)
+			
+		# 	sale_id.action_confirm()
+		# 	invoice = sale_id.action_invoice_create()
+		# 	invoice_id = self.env['account.invoice'].browse(invoice[0])
+		# 	invoice_id.sudo().action_invoice_open()
+		# 	invoice_id.sudo().pay_and_reconcile(self.env['account.journal'].search([('type', '=', 'cash')], limit=1), invoice_id.amount_total)
+			return res

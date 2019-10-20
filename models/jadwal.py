@@ -51,8 +51,8 @@ class PersebayaJadwal(models.Model):
 	kuning_away = fields.Char(string="Yellow Card",readonly=True,compute='_compute_match_detail')
 	merah_home = fields.Char(string="Red Card",readonly=True,compute='_compute_match_detail')
 	merah_away = fields.Char(string="Red Card",readonly=True,compute='_compute_match_detail')
-	penguasaan_home = fields.Integer(string="Ball Possession (%)")
-	penguasaan_away = fields.Integer(string="Ball Possession (%)")
+	penguasaan_home = fields.Integer(string="Ball Possession (%)",store=True)
+	penguasaan_away = fields.Integer(string="Ball Possession (%)",store=True)
 	tembakan_home = fields.Char(string="Shots",readonly=True,compute='_compute_match_detail')
 	tembakan_away = fields.Char(string="Shots",readonly=True,compute='_compute_match_detail')
 	pelanggaran_home = fields.Char(string="Fouls",readonly=True,compute='_compute_match_detail')
@@ -96,9 +96,9 @@ class PersebayaJadwal(models.Model):
 
 	@api.multi
 	def action_done(self):
-		if self.ht_home > self.ht_away:
+		if self.ft_home > self.ft_away:
 			self.write({'hasil': 'home'})
-		elif self.ht_home < self.ht_away:
+		elif self.ft_home < self.ft_away:
 			self.write({'hasil': 'away'})
 		else:
 			self.write({'hasil': 'draw'})

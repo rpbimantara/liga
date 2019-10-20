@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from odoo import fields, models, api
 from datetime import datetime, timedelta
 import barcode
@@ -30,10 +32,12 @@ class EventRegistrationBarcode(models.Model):
 	def create(self, vals):
 		res = super(EventRegistrationBarcode, self).create(vals)
 		change_date = datetime.strptime(res.date_open, '%Y-%m-%d %H:%M:%S') +  timedelta(hours=7)
-		date = change_date.strftime("%Y%m%d%H%M%S")
-		res.barcode = str(res.partner_id.id)+str(res.event_id.id)+date+str(res.id)
-		ean = barcode.get('ean13', res.barcode, writer=ImageWriter())
-		fullname = ean.save('/tmp/' + res.barcode)
+		date = change_date.strftime("%Y")
+		str_barcode = str(res.partner_id.id)+str(res.event_id.id)+date+str(res.id)
+		res.barcode = str_barcode
+		EAN = barcode.get_barcode_class('code39')
+		ean = EAN(str_barcode, writer=ImageWriter())
+		fullname = ean.save('/tmp/' + str_barcode)
 		with open(fullname, 'rb') as f:
 			file = f.read()
 		res.barcode_image = base64.b64encode(file)

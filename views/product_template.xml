@@ -96,6 +96,25 @@
                 </p>
             </field>
         </record>
+        <record id="product_deleted_action" model="ir.actions.act_window">
+            <field name="name">Deleted Product</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="product.product_template_kanban_view"/>
+            <field name="domain">[('is_deleted','=',True)]</field>
+            <field name="search_view_id" ref="product.product_template_search_view"/>
+            <!-- <field name="context">{'group_by':'status_donasi'}</field> -->
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new product
+                </p><p>
+                    You must define a product for everything you purchase,
+                    whether it's a physical product, a consumable or services.
+                </p>
+            </field>
+        </record>
         <!-- <record model="ir.actions.act_window" id="product_lelang_action">
 			<field name="name">Validation Auction</field>
 			<field name="res_model">product.template</field>
